@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>教练列表</title>
+    <link rel="stylesheet" href="../../Contents/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/easyui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/icon.css">
+    <script src="../../Contents/js/config.js"></script>
+    <script src="../../Contents/js/jquery.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/jquery.easyui.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../Contents/js/easyui.util.js"></script>
+    <script src="../../Contents/lib/lingshiframework/lingshi_base.js"></script>
+    <script src="../../Contents/js/md5.js"></script>
+    <script src="../../Contents/js/layui.util.js"></script>
+</head>
+<body>
+    <div class="easyui-layout" data-options='fit:"true"'>
+        <table id="table-teacher"></table>
+    </div>
+    <script id="lay-teacherform" type="text/html">
+        <div style="padding: 10px;padding-right: 30px">
+            <form class="layui-form" id="form-teacher">
+                <input id="opt-type" type="hidden" name="type" />
+                <input type="hidden" name="teacherid" />
+                <div class="layui-form-item">
+                    <label class="layui-form-label">头像</label>
+                    <img id="img-teacherheadurl" data-src="" src="../../Contents/images/dfthead.png" height="80" width="80" />
+                    <button type="button" class="layui-btn" id="btn-theadurl">
+                        <i class="layui-icon">&#xe67c;</i>上传图片
+                    </button>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">真实姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="teachername" required  lay-verify="teachername" placeholder="请输入姓名" data-valid="name:'姓名',length:[1,20]" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">性别</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="teachersex" value="0" title="女" />
+                        <input type="radio" name="teachersex" value="1" title="男" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">联系方式</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="teacherphone" required  lay-verify="phone" placeholder="请输入联系方式" data-valid="name:'联系方式',length:[1,20]" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">生日</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="date-birthday" name="teacherbirthday" required  placeholder="例:2000-01-01" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">备注</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="teachercontent" required  lay-verify="birthday" placeholder="备注" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item" style="text-align: right">
+                    <button type="button" class="layui-btn" onclick="save()">保存</button>
+                </div>
+            </form>
+        </div>
+    </script>
+    <script src="../../Contents/lib/layui/layui.all.js"></script>
+    <script>
+        $(function () {
+            initDataGrid();
+        })
+
+        //保存
+        function save() {
+            var postData=FormUtil.getFormMap("#form-teacher");
+            var imgurl=$('#img-teacherheadurl').attr('data-src');
+            if(postData==null||postData==''){
+                return;
+            }
+            if(imgurl==null||imgurl==''){
+                layer.msg("请上传教练头像")
+                return;
+            }
+
+            var url=Config.UrlHead+'/teachers/add';
+            if(postData.type=='edit'){
+                url=Config.UrlHead+'/teachers/update';
+            }
+            postData.teacherheadurl=imgurl;
+            $.post(url
+                ,postData
+                ,function (data) {
+                    if(data.code==1){
+                        layer.closeAll();
+                    }
+                    layer.msg(data.msg);
+                    $('#table-teacher').datagrid('reload');
+                },'json')
+        }
+
+        //批量删除
+        function batchDelete() {
+            var rows = $('#table-teacher').datagrid('getChecked');
+            if (rows.length < 1) {
+                return;
+            }
+            var ids = [];
+            for (var i = 0; i < rows.length; i++) {
+                ids.push(rows[i].teacherid);
+            }
+            layer.confirm("是否确定删除", function (index) {
+                $.ajax({
+                    url: Config.UrlHead + '/teachers/delete',
+                    contentType: "application/json ; charset=utf-8",
+                    data: JSON.stringify(ids),
+                    method: 'post',
+                    dataType: 'json',
+                    success: function (data) {
+                        layer.close(index);
+                        layer.msg(data.msg);
+                        $('#table-teacher').datagrid('reload');
+                    }
+                });
+            }, function (index) {
+                layer.close(index);
+            });
+        }
+
+        //点击删除事件
+        function del(id) {
+            var ids = [];
+            ids.push(id);
+            layer.confirm("是否确定删除", function (index) {
+                $.ajax({
+                    url: Config.UrlHead + '/teachers/delete',
+                    contentType: "application/json ; charset=utf-8",
+                    data: JSON.stringify(ids),
+                    method: 'post',
+                    dataType: 'json',
+                    success: function (data) {
+                        layer.close(index);
+                        layer.msg(data.msg);
+                        $('#table-teacher').datagrid('reload');
+                    }
+                });
+            }, function (index) {
+                layer.close(index);
+            });
+        }
+
+        //展示添加用户
+        function showAddTeacher() {
+            layer.open({
+                type:1
+                ,title:'添加教练'
+                ,content:$('#lay-teacherform').html()
+                ,success:function(){
+                    $('#opt-type').val('add');
+                    FormUtil.loadForm('#form-teacher',{sex:0});
+                    layui.laydate.render({
+                        elem: '#date-birthday'
+                    });
+                    layui.form.render();
+                    initUploder();
+                }
+            })
+        }
+
+        //展示编辑框
+        function showEdit(id){
+            var index = layer.open({type:3});
+            $.post(Config.UrlHead+'/teachers/single'
+                    ,{teacherid:id}
+                    ,function (data) {
+                        layer.close(index);
+                        layer.open({
+                            type:1
+                            ,title:'编辑教练信息'
+                            ,content:$('#lay-teacherform').html()
+                            ,success:function(){
+                                $('#opt-type').val('edit');
+                                layui.laydate.render({
+                                    elem: '#date-birthday'
+                                });
+
+                                if(data.code==1){
+                                    $('#img-teacherheadurl').attr('data-src',data.data.teacherheadurl);
+                                    $('#img-teacherheadurl').attr('src',Config.UrlHead+data.data.teacherheadurl);
+                                    FormUtil.loadForm('#form-teacher',data.data);
+                                }else {
+                                    layer.msg(data.msg);
+                                }
+
+                                layui.form.render();
+                                initUploder();
+                            }
+                        })
+                },'json');
+        }
+
+        //初始话头像上传组件
+        function initUploder() {
+            layui.upload.render({
+                elem: '#btn-theadurl' //绑定元素
+                , accept: 'images'
+                , data: {basePath:'/Uploadfile/teacherheads/'}
+                , url: Config.UrlHead + '/uploadhead' //上传接口
+                , done: function (res) {
+                    $('#img-teacherheadurl').attr("data-src", res.msg);
+                    $('#img-teacherheadurl').attr("src",Config.UrlHead + res.msg);
+                }
+            });
+        }
+
+        //初始化表格数据
+        function initDataGrid() {
+            EasyUIUtil.initDataGrid('#table-teacher', Config.UrlHead + "/teachers/list",getColumns());
+            var pager=$('#table-teacher').datagrid('getPager');
+            pager.pagination({
+                showPageList: true,
+                buttons: [{
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        showAddTeacher();
+                    }
+                }, {
+                    iconCls: 'icon-remove',
+                    handler: function () {
+                        batchDelete();
+                    }
+                }],
+                onBeforeRefresh: function () {
+                    return true;
+                }
+            });
+        }
+
+        //获取列
+        function getColumns(){
+            var columns=[[
+                {field:'ck',checkbox:true},
+                {
+                    field:'teacherid',
+                    width:50,
+                    align:'center',
+                    title:"操作",
+                    formatter:function(val,row){
+                        return '<button class="layui-btn layui-btn-xs layui-btn-danger" onclick="del(\'' + val + '\')"><i class="layui-icon">&#xe640;</i>移除</button>'
+                            +'<button class="layui-btn layui-btn-xs" onclick="showEdit(\'' + val + '\')"><i class="layui-icon">&#xe642;</i>编辑</button>'
+                    }
+                },
+                {
+                    field:'teacherheadurl',
+                    width:80,
+                    align:'center',
+                    title:'头像',
+                    formatter:function(val,row){
+                        return '<img height="60" width="60" src="'+ (Config.UrlHead+val) +'" />'
+                    }
+                },
+                {field:'teachername',width:100,align:'center',title:"姓名"},
+                {
+                    field:'teachersex',
+                    width:100,
+                    align:'center',
+                    title:"性别",
+                    formatter:function(val,row){
+                        return val==1?'男':'女';
+                    }
+                },
+                {field:'teacherbirthday',width:100,align:'center',title:"生日"},
+                {field:'teacherphone',width:100,align:'center',title:"联系方式"}
+            ]];
+            return columns;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="fitnessroom.base.dao.CoursesMapper" >
+  <select id="getList" resultType="fitnessroom.base.model.Courses" parameterType="fitnessroom.base.model.Courses" >
+    select * from courses
+    where 1=1
+    <if test="courseid != null" >
+      and courseId = #{courseid}
+    </if>
+    <if test="coursename != null" >
+      and courseName = #{coursename}
+    </if>
+    <if test="coursecontent != null" >
+      and courseContent = #{coursecontent}
+    </if>
+  </select>
+  
+  <select id="getSingle" resultType="fitnessroom.base.model.Courses" >
+    select * from courses
+    where courseId = #{id}
+    limit 0,1
+  </select>
+  
+  <insert id="insert" parameterType="fitnessroom.base.model.Courses" >
+    insert into courses
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="courseid != null" >
+        courseId,
+      </if>
+      <if test="coursename != null" >
+        courseName,
+      </if>
+      <if test="coursecontent != null" >
+        courseContent
+      </if>
+    </trim>
+    <trim prefix="values(" suffix=")" suffixOverrides="," >
+      <if test="courseid != null" >
+        #{courseid},
+      </if>
+      <if test="coursename != null" >
+        #{coursename},
+      </if>
+      <if test="coursecontent != null" >
+        #{coursecontent}
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="update" parameterType="fitnessroom.base.model.Courses" >
+    update courses
+    <set >
+      <if test="coursename != null" >
+        courseName = #{coursename},
+      </if>
+      <if test="coursecontent != null" >
+        courseContent = #{coursecontent}
+      </if>
+    </set>
+    where
+    courseId = #{courseid}
+  </update>
+  
+  <delete id="batchDelete" >
+    delete from courses
+    where courseId in(
+    <foreach item="item" collection="list" separator="," >
+      #{item}
+    </foreach>
+    )
+  </delete>
+  
+  <select id="getListWithPage" resultType="fitnessroom.base.model.Courses" parameterType="fitnessroom.base.model.Courses" >
+    select * from courses
+    where 1=1
+    <if test="courseid != null" >
+      and courseId = #{courseid}
+    </if>
+    <if test="coursename != null" >
+      and courseName = #{coursename}
+    </if>
+    <if test="coursecontent != null" >
+      and courseContent = #{coursecontent}
+    </if>
+  </select>
+  
+  <select id="count" resultType="java.lang.Long" parameterType="fitnessroom.base.model.Courses" >
+    select count(*) from courses
+    where 1=1
+    <if test="courseid != null" >
+      and courseId = #{courseid}
+    </if>
+    <if test="coursename != null" >
+      and courseName = #{coursename}
+    </if>
+    <if test="coursecontent != null" >
+      and courseContent = #{coursecontent}
+    </if>
+  </select>
+  
+</mapper>

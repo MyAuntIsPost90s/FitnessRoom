@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>课程设置</title>
+    <link rel="stylesheet" href="../../Contents/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/easyui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/icon.css">
+    <script src="../../Contents/js/config.js"></script>
+    <script src="../../Contents/js/jquery.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/jquery.easyui.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../Contents/js/easyui.util.js"></script>
+    <script src="../../Contents/lib/lingshiframework/lingshi_base.js"></script>
+    <script src="../../Contents/js/md5.js"></script>
+    <script src="../../Contents/js/layui.util.js"></script>
+    <style>
+        .btn-return,.btn-return:hover{
+            height: 40px;
+            line-height: 40px;
+            font-size: 14px;
+            color: #fff;
+            cursor: pointer;
+        }
+        .div-tiptitle{
+            height: 40px;
+            line-height: 40px;
+            font-size: 14px;
+            color: #fff;
+            padding: 0 5px;
+        }
+        .courseset{
+            padding: 10px;
+        }
+        .courselist{
+            border: 1px solid rgba(140, 142, 145, 0.17);
+            border-radius: 5px;
+            height: 100%;
+            margin: 10px 0;
+            padding: 5px;
+            overflow-y: auto;
+            width: 200px;
+            float: left;
+        }
+        .courseitem{
+            border:1px solid #fff ;
+            background-color: rgba(116, 198, 8, 0.38);
+            display: block;
+            height: 60px;
+            margin-bottom: 5px;
+            text-align: center;
+            width: 100%;
+            z-index: 999999;
+        }
+        .courseitem dt,.courseitem dd{
+            height: 30px;
+            line-height: 30px;
+            color: #fff;
+            padding: 0 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .layui-table th{
+            text-align: center;
+        }
+        .layui-table td{
+            text-align: center;
+        }
+        .table-course{
+            margin-left: 10px;
+            float: left;
+            overflow-x: auto;
+        }
+        .div-footer{
+            text-align: right;
+            padding: 5px 5px;
+            border: 1px solid rgba(140, 142, 145, 0.17);
+            border-radius: 5px;
+            float: left;
+            margin: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-bg-blue">
+    <a class="btn-return" onclick="window.history.back(-1)">
+        <i class="layui-icon">&#xe603;</i>
+        返回
+    </a>
+    <div class="layui-layout-right div-tiptitle">
+        课程安排
+    </div>
+</div>
+<div class="courseset">
+    <div class="courselist">
+
+    </div>
+
+    <div class="table-course">
+        <table class="layui-table" style="min-width: 1380px">
+            <thead>
+            <tr>
+                <th></th>
+                <th>时间</th>
+                <th width="190px">星期一</th>
+                <th width="190px">星期二</th>
+                <th width="190px">星期三</th>
+                <th width="190px">星期四</th>
+                <th width="190px">星期五</th>
+                <th width="190px">星期六</th>
+                <th width="190px">星期日</th>
+            </tr>
+            </thead>
+            <tbody id="tb-courses">
+            <tr>
+                <td rowspan="2">上午</td>
+                <td>9:00</td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+            </tr>
+            <tr>
+                <td>10:00</td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+            </tr>
+            <tr>
+                <td rowspan="2">下午</td>
+                <td>15:00</td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+            </tr>
+            <tr>
+                <td>16:00</td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+            </tr>
+            <tr>
+                <td>晚上</td>
+                <td>20:00</td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+                <td data-type="data"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<div class="div-footer">
+    <div class="layui-inline">
+        <label class="layui-form-label">开始时间</label>
+        <div class="layui-input-block">
+            <input type="text" id="date-begin" readonly name="begintime" required  lay-verify="birthday" placeholder="例:2000-01-01" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-inline">
+        <label class="layui-form-label">结束时间</label>
+        <div class="layui-input-block">
+            <input type="text" id="date-end" readonly name="endtime" required  lay-verify="birthday" placeholder="例:2000-01-01" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <button class="layui-btn" onclick="save()">保存</button>
+</div>
+
+<script id="lay-course" type="text/html">
+    {{#  layui.each(d.rows, function(index, item){ }}
+    <dl data-id="{{ item.courseid }}" class="courseitem">
+        <dt>{{ item.coursename }}</dt>
+        <dd>{{ item.coursecontent }}</dd>
+    </dl>
+    {{# }) }}
+</script>
+<script src="../../Contents/lib/layui/layui.all.js"></script>
+<script>
+    var userid=LingShiUtil.getParam('id');
+    var usercourse=null;
+    $(function(){
+        $('.courseset').css('height',(innerHeight-150)+'px');
+        $('.layui-table').css('height',(innerHeight-140)+'px');
+        $('.table-course').css('width',(innerWidth-200-60)+'px')
+        $('.div-footer').css('width',(innerWidth-50)+'px')
+        loadCourse();
+        loadUserCourse();
+
+        layui.laydate.render({
+            elem: '#date-begin'
+        });
+        layui.laydate.render({
+            elem: '#date-end'
+        });
+    })
+
+    //绑定课程集合事件
+    function bindCourseItemEvent(selector) {
+        $(selector).draggable({
+            revert:true,
+            proxy:function(source){
+                var p = $('<dl class="courseitem" style="width: '+$('.courselist').css('width')+'">'+source.innerHTML+'</dl>');
+                p.appendTo('body');
+                return p;
+            }
+        });
+    }
+
+    //绑定课表事件
+    function bindUserCourseItemEvent(selector) {
+        $(selector).draggable({
+            revert:true
+        });
+    }
+
+    $('.courselist').droppable({
+        onDragEnter:function(){
+            $(this).addClass('over');
+        },
+        onDragLeave:function(){
+            $(this).removeClass('over');
+        },
+        onDrop:function(e,source){
+            $(this).removeClass('over');
+            if ($(source).hasClass('assigned')){
+                $(this).append(source);
+                $(source).remove();
+            }
+        }
+    })
+
+    $('.layui-table td[data-type=data]').droppable({
+        onDragEnter:function(){
+            $(this).addClass('over');
+        },
+        onDragLeave:function(){
+            $(this).removeClass('over');
+        },
+        onDrop:function(e,source){
+            $(this).removeClass('over');
+            if ($(source).hasClass('assigned')){
+                $(this).append(source);
+            } else {
+                var c = $(source).clone().addClass('assigned');
+                $(this).empty().append(c);
+                bindUserCourseItemEvent('.assigned');
+            }
+        }
+    });
+
+    //加载课表
+    function loadUserCourse() {
+        $.post(Config.UrlHead+'/usercourses/list',
+            function(data){
+                if(data.code!=1){
+                    layer.msg(data.msg);
+                    return;
+                }
+                //生成map
+                var map={};
+                for(var i=0;i<data.data.length;i++){
+                    map[data.data[i].usercoursepoints]=data.data[i];
+                }
+                var i=0;
+                var begintime='';
+                var endtime='';
+                $('#tb-courses td[data-type=data]').each(function () {
+                    i++;
+                    var key='['+parseInt(i/7)+','+i%7+']'
+                    var model=map[key];
+                    if(model!=null){
+                        begintime=model.usercoursebegintime;
+                        endtime=model.usercourseendtime;
+                        $(this).append(' <dl data-id="'+model.courseid+'" class="courseitem assigned">' +
+                            '<dt>'+ model.course.coursename +'</dt>' +
+                            '<dd>'+ model.course.coursecontent+'</dd></dl>')
+                    }
+                })
+
+                $('#date-begin').val(begintime);
+                $('#date-end').val(endtime);
+                bindUserCourseItemEvent('.layui-table .courseitem');
+            },'json')
+    }
+
+    //加载课程
+    function loadCourse(){
+        $.post(Config.UrlHead+'/courses/list'
+            ,{page:1,rows:999}
+            ,function (data) {
+                var temp=$('#lay-course').html();
+                layui.laytpl(temp).render(data.data,function (html) {
+                    $('.courselist').append(html)
+                })
+                bindCourseItemEvent('.courselist .courseitem');
+            },'json')
+    }
+
+    //保存
+    function save() {
+        var i=0;
+        var usercouses=[];
+        var usercoursebegintime = $('#date-begin').val();
+        var usercourseendtime = $('#date-end').val();
+        if(usercoursebegintime==''||usercourseendtime==''){
+            layer.msg('请设置开始时间和结束时间');
+            return;
+        }
+
+        $('#tb-courses td[data-type=data]').each(function () {
+            i++;
+            if($(this).find('.courseitem').length>0){
+                var id=$(this).find('.courseitem').attr('data-id');
+
+                usercouses.push({
+                    userid:userid
+                    ,courseid:id
+                    ,teacherid:''
+                    ,equipmentid:''
+                    ,usercoursepoints:'['+parseInt(i/7)+','+i%7+']'
+                    ,usercoursebegintime:usercoursebegintime
+                    ,usercourseendtime:usercourseendtime})
+            }
+        })
+
+        if(usercouses.length<1){
+            layer.msg('当前为空课表');
+            return;
+        }
+
+        url=Config.UrlHead+'/usercourses/update';
+        $.ajax({
+            url: url,
+            contentType: "application/json ; charset=utf-8",
+            data: JSON.stringify(usercouses),
+            method: 'post',
+            dataType: 'json',
+            success: function (data) {
+                layer.msg(data.msg);
+            }
+        });
+    }
+</script>
+</body>
+</html>

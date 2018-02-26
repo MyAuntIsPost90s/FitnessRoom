@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="fitnessroom.base.dao.UsercoursesMapper" >
+  <resultMap type="fitnessroom.base.model.Usercourses" id="UserCourseMap" autoMapping="true">
+  	<id property="usercourseid" column="usercourseid" />
+  	<association property="course" javaType="fitnessroom.base.model.Courses" autoMapping="true"></association>
+  </resultMap>
+  
+  <select id="getList" resultMap="UserCourseMap" parameterType="fitnessroom.base.model.Usercourses" >
+    SELECT usercourses.*,courses.courseContent,courses.courseName FROM usercourses
+    LEFT JOIN courses ON usercourses.courseid=courses.courseid
+    where 1=1
+    <if test="usercourseid != null" >
+      and userCourseId = #{usercourseid}
+    </if>
+    <if test="courseid != null" >
+      and courseId = #{courseid}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="teacherid != null" >
+      and teacherId = #{teacherid}
+    </if>
+    <if test="equipmentid != null" >
+      and equipmentId = #{equipmentid}
+    </if>
+    <if test="usercoursepoints != null" >
+      and userCoursePoints = #{usercoursepoints}
+    </if>
+    <if test="usercourseendtime != null" >
+      and userCourseEndTime >= #{usercourseendtime}
+    </if>
+    <if test="usercoursebegintime != null" >
+      and userCourseBeginTime = #{usercoursebegintime}
+    </if>
+  </select>
+  
+  <select id="getSingle" resultType="fitnessroom.base.model.Usercourses" >
+    select * from usercourses
+    where userCourseId = #{id}
+    limit 0,1
+  </select>
+  
+  <insert id="insert" parameterType="fitnessroom.base.model.Usercourses" >
+    insert into usercourses
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="usercourseid != null" >
+        userCourseId,
+      </if>
+      <if test="courseid != null" >
+        courseId,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="teacherid != null" >
+        teacherId,
+      </if>
+      <if test="equipmentid != null" >
+        equipmentId,
+      </if>
+      <if test="usercoursepoints != null" >
+        userCoursePoints,
+      </if>
+      <if test="usercourseendtime != null" >
+        userCourseEndTime,
+      </if>
+      <if test="usercoursebegintime != null" >
+        userCourseBeginTime
+      </if>
+    </trim>
+    <trim prefix="values(" suffix=")" suffixOverrides="," >
+      <if test="usercourseid != null" >
+        #{usercourseid},
+      </if>
+      <if test="courseid != null" >
+        #{courseid},
+      </if>
+      <if test="userid != null" >
+        #{userid},
+      </if>
+      <if test="teacherid != null" >
+        #{teacherid},
+      </if>
+      <if test="equipmentid != null" >
+        #{equipmentid},
+      </if>
+      <if test="usercoursepoints != null" >
+        #{usercoursepoints},
+      </if>
+      <if test="usercourseendtime != null" >
+        #{usercourseendtime},
+      </if>
+      <if test="usercoursebegintime != null" >
+        #{usercoursebegintime}
+      </if>
+    </trim>
+  </insert>
+  
+  <insert id="batchInsert" parameterType="fitnessroom.base.model.Usercourses" >
+    insert into usercourses
+    (usercourseid,courseid,userid,teacherid,equipmentid,usercoursepoints,usercourseendtime,usercoursebegintime)
+    values
+    <foreach item="item" collection="list" separator="," >
+	   (#{item.usercourseid},#{item.courseid},#{item.userid},#{item.teacherid},#{item.equipmentid}
+	   ,#{item.usercoursepoints},#{item.usercourseendtime},#{item.usercoursebegintime})
+    </foreach>
+  </insert>
+  
+  <update id="update" parameterType="fitnessroom.base.model.Usercourses" >
+    update usercourses
+    <set >
+      <if test="courseid != null" >
+        courseId = #{courseid},
+      </if>
+      <if test="userid != null" >
+        userId = #{userid},
+      </if>
+      <if test="teacherid != null" >
+        teacherId = #{teacherid},
+      </if>
+      <if test="equipmentid != null" >
+        equipmentId = #{equipmentid},
+      </if>
+      <if test="usercoursepoints != null" >
+        userCoursePoints = #{usercoursepoints},
+      </if>
+      <if test="usercourseendtime != null" >
+        userCourseEndTime = #{usercourseendtime},
+      </if>
+      <if test="usercoursebegintime != null" >
+        userCourseBeginTime = #{usercoursebegintime}
+      </if>
+    </set>
+    where
+    userCourseId = #{usercourseid}
+  </update>
+  
+  <delete id="batchDelete" >
+    delete from usercourses
+    where userCourseId in(
+    <foreach item="item" collection="list" separator="," >
+      #{item}
+    </foreach>
+    )
+  </delete>
+  
+  <delete id="deleteByUserId" >
+    delete from usercourses
+    where userid=#{userid}
+  </delete>
+  
+  <select id="getListWithPage" resultType="fitnessroom.base.model.Usercourses" parameterType="fitnessroom.base.model.Usercourses" >
+    select * from usercourses
+    where 1=1
+    <if test="usercourseid != null" >
+      and userCourseId = #{usercourseid}
+    </if>
+    <if test="courseid != null" >
+      and courseId = #{courseid}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="teacherid != null" >
+      and teacherId = #{teacherid}
+    </if>
+    <if test="equipmentid != null" >
+      and equipmentId = #{equipmentid}
+    </if>
+    <if test="usercoursepoints != null" >
+      and userCoursePoints = #{usercoursepoints}
+    </if>
+    <if test="usercourseendtime != null" >
+      and userCourseEndTime = #{usercourseendtime}
+    </if>
+    <if test="usercoursebegintime != null" >
+      and userCourseBeginTime = #{usercoursebegintime}
+    </if>
+  </select>
+  
+  <select id="count" resultType="java.lang.Long" parameterType="fitnessroom.base.model.Usercourses" >
+    select count(*) from usercourses
+    where 1=1
+    <if test="usercourseid != null" >
+      and userCourseId = #{usercourseid}
+    </if>
+    <if test="courseid != null" >
+      and courseId = #{courseid}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="teacherid != null" >
+      and teacherId = #{teacherid}
+    </if>
+    <if test="equipmentid != null" >
+      and equipmentId = #{equipmentid}
+    </if>
+    <if test="usercoursepoints != null" >
+      and userCoursePoints = #{usercoursepoints}
+    </if>
+    <if test="usercourseendtime != null" >
+      and userCourseEndTime = #{usercourseendtime}
+    </if>
+    <if test="usercoursebegintime != null" >
+      and userCourseBeginTime = #{usercoursebegintime}
+    </if>
+  </select>
+  
+</mapper>

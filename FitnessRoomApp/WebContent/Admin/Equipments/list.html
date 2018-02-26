@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设备管理</title>
+    <link rel="stylesheet" href="../../Contents/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/easyui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/icon.css">
+    <script src="../../Contents/js/config.js"></script>
+    <script src="../../Contents/js/jquery.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/jquery.easyui.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../Contents/js/easyui.util.js"></script>
+    <script src="../../Contents/lib/lingshiframework/lingshi_base.js"></script>
+    <script src="../../Contents/js/md5.js"></script>
+    <script src="../../Contents/js/layui.util.js"></script>
+</head>
+<body>
+<div class="easyui-layout" data-options='fit:"true"'>
+    <table id="table-equipment"></table>
+</div>
+<script id="lay-equipmentform" type="text/html">
+    <div style="padding: 10px;padding-right: 30px">
+        <form class="form-equipment" id="form-equipment">
+            <input id="opt-type" type="hidden" name="type" />
+            <input type="hidden" name="equipmentid" />
+            <div class="layui-form-item">
+                <label class="layui-form-label">设备名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="equipmentname" required  lay-verify="equipmentname" placeholder="请输入设备名" data-valid="name:'设备名',length:[1,20]" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-block">
+                    <input type="text" name="equipmentcontent" required placeholder="请输入备注" data-valid="name:'设备名',length:[1,50]" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" style="text-align: right">
+                <button type="button" class="layui-btn" onclick="save()">保存</button>
+            </div>
+        </form>
+    </div>
+</script>
+<script src="../../Contents/lib/layui/layui.all.js"></script>
+<script>
+    $(function () {
+        initDataGrid();
+    })
+
+    //保存
+    function save() {
+        var postData=FormUtil.getFormMap("#form-equipment");
+        if(postData==null||postData==''){
+            return;
+        }
+        var url=Config.UrlHead+'/equipments/add';
+        if(postData.type=='edit'){
+            url=Config.UrlHead+'/equipments/update';
+        }
+        if(postData.type=='add'){
+            postData.password=hex_md5("123").toUpperCase();
+        }
+        $.post(url
+            ,postData
+            ,function (data) {
+                if(data.code==1){
+                    layer.closeAll();
+                }
+                layer.msg(data.msg);
+                $('#table-equipment').datagrid('reload');
+            },'json')
+    }
+
+    //批量删除
+    function batchDelete() {
+        var rows = $('#table-equipment').datagrid('getChecked');
+        if (rows.length < 1) {
+            return;
+        }
+        var ids = [];
+        for (var i = 0; i < rows.length; i++) {
+            ids.push(rows[i].equipmentid);
+        }
+        layer.confirm("是否确定删除", function (index) {
+            $.ajax({
+                url: Config.UrlHead + '/equipments/delete',
+                contentType: "application/json ; charset=utf-8",
+                data: JSON.stringify(ids),
+                method: 'post',
+                dataType: 'json',
+                success: function (data) {
+                    layer.close(index);
+                    layer.msg(data.msg);
+                    $('#table-equipment').datagrid('reload');
+                }
+            });
+        }, function (index) {
+            layer.close(index);
+        });
+    }
+
+    //点击删除事件
+    function del(id) {
+        var ids = [];
+        ids.push(id);
+        layer.confirm("是否确定删除", function (index) {
+            $.ajax({
+                url: Config.UrlHead + '/equipments/delete',
+                contentType: "application/json ; charset=utf-8",
+                data: JSON.stringify(ids),
+                method: 'post',
+                dataType: 'json',
+                success: function (data) {
+                    layer.close(index);
+                    layer.msg(data.msg);
+                    $('#table-equipment').datagrid('reload');
+                }
+            });
+        }, function (index) {
+            layer.close(index);
+        });
+    }
+
+    //展示添加用户
+    function showAddEquipment() {
+        layer.open({
+            type:1
+            ,title:'添加设备'
+            ,content:$('#lay-equipmentform').html()
+            ,success:function(){
+                $('#opt-type').val('add');
+                FormUtil.loadForm('#form-equipment',{sex:0});
+                layui.laydate.render({
+                    elem: '#date-birthday'
+                });
+                layui.form.render();
+            }
+        })
+    }
+
+    //展示编辑框
+    function showEdit(id){
+        var index = layer.open({type:3});
+        $.post(Config.UrlHead+'/equipments/single'
+            ,{equipmentid:id}
+            ,function (data) {
+                layer.close(index);
+                layer.open({
+                    type:1
+                    ,title:'编辑设备信息'
+                    ,content:$('#lay-equipmentform').html()
+                    ,success:function(){
+                        $('#opt-type').val('edit');
+                        layui.laydate.render({
+                            elem: '#date-birthday'
+                        });
+
+                        if(data.code==1){
+                            FormUtil.loadForm('#form-equipment',data.data);
+                        }else {
+                            layer.msg(data.msg);
+                        }
+
+                        layui.form.render();
+                    }
+                })
+            },'json');
+    }
+
+    //初始化表格数据
+    function initDataGrid() {
+        EasyUIUtil.initDataGrid('#table-equipment', Config.UrlHead + "/equipments/list",getColumns(),{equipmenttype:1});
+        var pager=$('#table-equipment').datagrid('getPager');
+        pager.pagination({
+            showPageList: true,
+            buttons: [{
+                iconCls: 'icon-add',
+                handler: function () {
+                    showAddEquipment();
+                }
+            }, {
+                iconCls: 'icon-remove',
+                handler: function () {
+                    batchDelete();
+                }
+            }],
+            onBeforeRefresh: function () {
+                return true;
+            }
+        });
+    }
+
+    //获取列
+    function getColumns(){
+        var columns=[[
+            {field:'ck',checkbox:true},
+            {
+                field:'equipmentid',
+                width:50,
+                align:'center',
+                title:"操作",
+                formatter:function(val,row){
+                    return '<button class="layui-btn layui-btn-xs layui-btn-danger" onclick="del(\'' + val + '\')"><i class="layui-icon">&#xe640;</i>移除</button>'
+                        +'<button class="layui-btn layui-btn-xs" onclick="showEdit(\'' + val + '\')"><i class="layui-icon">&#xe642;</i>编辑</button>'
+                }
+            },
+            {field:'equipmentname',width:100,align:'center',title:"设备名称"},
+            {field:'equipmentcontent',width:100,align:'center',title:"备注"}
+        ]];
+        return columns;
+    }
+</script>
+</body>
+</html>

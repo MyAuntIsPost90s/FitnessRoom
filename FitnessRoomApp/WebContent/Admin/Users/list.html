@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户列表</title>
+    <link rel="stylesheet" href="../../Contents/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/easyui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/icon.css">
+    <script src="../../Contents/js/config.js"></script>
+    <script src="../../Contents/js/jquery.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/jquery.easyui.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../Contents/js/easyui.util.js"></script>
+    <script src="../../Contents/lib/lingshiframework/lingshi_base.js"></script>
+    <script src="../../Contents/js/md5.js"></script>
+    <script src="../../Contents/js/layui.util.js"></script>
+</head>
+<body>
+    <div class="easyui-layout" data-options='fit:"true"'>
+        <table id="table-user"></table>
+    </div>
+    <script id="lay-userform" type="text/html">
+        <div style="padding: 10px;padding-right: 30px">
+            <form class="layui-form" id="form-user">
+                <input id="opt-type" type="hidden" name="type" />
+                <input type="hidden" name="userid" />
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="username" required  lay-verify="username" placeholder="请输入用户名" data-valid="name:'用户名',length:[1,20]" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">真实姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="realname" required  lay-verify="realname" placeholder="请输入真实姓名" data-valid="name:'用户名',length:[1,20]" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">性别</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="sex" value="0" title="女" />
+                        <input type="radio" name="sex" value="1" title="男" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">联系方式</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="phone" required  lay-verify="phone" placeholder="请输入联系方式" data-valid="name:'用户名',length:[1,20]" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">生日</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="date-birthday" name="birthday" required  lay-verify="birthday" placeholder="例:2000-01-01" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item" style="text-align: right">
+                    <button type="button" class="layui-btn" onclick="save()">保存</button>
+                </div>
+            </form>
+        </div>
+    </script>
+    <script src="../../Contents/lib/layui/layui.all.js"></script>
+    <script>
+        $(function () {
+            initDataGrid();
+        })
+
+        //保存
+        function save() {
+            var postData=FormUtil.getFormMap("#form-user");
+            if(postData==null||postData==''){
+                return;
+            }
+            var url=Config.UrlHead+'/users/add';
+            if(postData.type=='edit'){
+                url=Config.UrlHead+'/users/update';
+            }
+            if(postData.type=='add'){
+                postData.password=hex_md5("123").toUpperCase();
+            }
+            $.post(url
+                ,postData
+                ,function (data) {
+                    if(data.code==1){
+                        layer.closeAll();
+                    }
+                    layer.msg(data.msg);
+                    $('#table-user').datagrid('reload');
+                },'json')
+        }
+
+        //批量删除
+        function batchDelete() {
+            var rows = $('#table-user').datagrid('getChecked');
+            if (rows.length < 1) {
+                return;
+            }
+            var ids = [];
+            for (var i = 0; i < rows.length; i++) {
+                ids.push(rows[i].userid);
+            }
+            layer.confirm("是否确定删除", function (index) {
+                $.ajax({
+                    url: Config.UrlHead + '/users/delete',
+                    contentType: "application/json ; charset=utf-8",
+                    data: JSON.stringify(ids),
+                    method: 'post',
+                    dataType: 'json',
+                    success: function (data) {
+                        layer.close(index);
+                        layer.msg(data.msg);
+                        $('#table-user').datagrid('reload');
+                    }
+                });
+            }, function (index) {
+                layer.close(index);
+            });
+        }
+
+        //点击删除事件
+        function del(id) {
+            var ids = [];
+            ids.push(id);
+            layer.confirm("是否确定删除", function (index) {
+                $.ajax({
+                    url: Config.UrlHead + '/users/delete',
+                    contentType: "application/json ; charset=utf-8",
+                    data: JSON.stringify(ids),
+                    method: 'post',
+                    dataType: 'json',
+                    success: function (data) {
+                        layer.close(index);
+                        layer.msg(data.msg);
+                        $('#table-user').datagrid('reload');
+                    }
+                });
+            }, function (index) {
+                layer.close(index);
+            });
+        }
+
+        //展示添加用户
+        function showAddUser() {
+            layer.open({
+                type:1
+                ,title:'添加用户'
+                ,content:$('#lay-userform').html()
+                ,success:function(){
+                    $('#opt-type').val('add');
+                    FormUtil.loadForm('#form-user',{sex:0});
+                    layui.laydate.render({
+                        elem: '#date-birthday'
+                    });
+                    layui.form.render();
+                }
+            })
+        }
+
+        //展示编辑框
+        function showEdit(id){
+            var index = layer.open({type:3});
+            $.post(Config.UrlHead+'/users/single'
+                    ,{userid:id}
+                    ,function (data) {
+                        layer.close(index);
+                        layer.open({
+                            type:1
+                            ,title:'修改用户'
+                            ,content:$('#lay-userform').html()
+                            ,success:function(){
+                                $('#opt-type').val('edit');
+                                layui.laydate.render({
+                                    elem: '#date-birthday'
+                                });
+
+                                if(data.code==1){
+                                    FormUtil.loadForm('#form-user',data.data);
+                                }else {
+                                    layer.msg(data.msg);
+                                }
+
+                                layui.form.render();
+                            }
+                        })
+                },'json');
+        }
+
+        //初始化表格数据
+        function initDataGrid() {
+            EasyUIUtil.initDataGrid('#table-user', Config.UrlHead + "/users/list",getColumns(),{usertype:1});
+            var pager=$('#table-user').datagrid('getPager');
+            pager.pagination({
+                showPageList: true,
+                buttons: [{
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        showAddUser();
+                    }
+                }, {
+                    iconCls: 'icon-remove',
+                    handler: function () {
+                        batchDelete();
+                    }
+                }],
+                onBeforeRefresh: function () {
+                    return true;
+                }
+            });
+        }
+
+        //获取列
+        function getColumns(){
+            var columns=[[
+                {field:'ck',checkbox:true},
+                {
+                    field:'userid',
+                    width:50,
+                    align:'center',
+                    title:"操作",
+                    formatter:function(val,row){
+                        return '<button class="layui-btn layui-btn-xs layui-btn-danger" onclick="del(\'' + val + '\')"><i class="layui-icon">&#xe640;</i>移除</button>'
+                            +'<button class="layui-btn layui-btn-xs" onclick="showEdit(\'' + val + '\')"><i class="layui-icon">&#xe642;</i>编辑</button>'
+                    }
+                },
+                {field:'username',width:100,align:'center',title:"用户名"},
+                {field:'realname',width:100,align:'center',title:"名称"},
+                {
+                    field:'sex',
+                    width:100,
+                    align:'center',
+                    title:"性别",
+                    formatter:function(val,row){
+                        return val==1?'男':'女';
+                    }
+                },
+                {field:'birthday',width:100,align:'center',title:"生日"},
+                {field:'phone',width:100,align:'center',title:"联系方式"}
+            ]];
+            return columns;
+        }
+    </script>
+</body>
+</html>

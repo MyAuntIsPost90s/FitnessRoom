@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="fitnessroom.base.dao.EquipmentsMapper" >
+  <select id="getList" resultType="fitnessroom.base.model.Equipments" parameterType="fitnessroom.base.model.Equipments" >
+    select * from equipments
+    where 1=1
+    <if test="equipmentid != null" >
+      and equipmentId = #{equipmentid}
+    </if>
+    <if test="equipmentname != null" >
+      and equipmentName = #{equipmentname}
+    </if>
+    <if test="equipmentcontent != null" >
+      and equipmentContent = #{equipmentcontent}
+    </if>
+  </select>
+  
+  <select id="getSingle" resultType="fitnessroom.base.model.Equipments" >
+    select * from equipments
+    where equipmentId = #{id}
+    limit 0,1
+  </select>
+  
+  <insert id="insert" parameterType="fitnessroom.base.model.Equipments" >
+    insert into equipments
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="equipmentid != null" >
+        equipmentId,
+      </if>
+      <if test="equipmentname != null" >
+        equipmentName,
+      </if>
+      <if test="equipmentcontent != null" >
+        equipmentContent
+      </if>
+    </trim>
+    <trim prefix="values(" suffix=")" suffixOverrides="," >
+      <if test="equipmentid != null" >
+        #{equipmentid},
+      </if>
+      <if test="equipmentname != null" >
+        #{equipmentname},
+      </if>
+      <if test="equipmentcontent != null" >
+        #{equipmentcontent}
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="update" parameterType="fitnessroom.base.model.Equipments" >
+    update equipments
+    <set >
+      <if test="equipmentname != null" >
+        equipmentName = #{equipmentname},
+      </if>
+      <if test="equipmentcontent != null" >
+        equipmentContent = #{equipmentcontent}
+      </if>
+    </set>
+    where
+    equipmentId = #{equipmentid}
+  </update>
+  
+  <delete id="batchDelete" >
+    delete from equipments
+    where equipmentId in(
+    <foreach item="item" collection="list" separator="," >
+      #{item}
+    </foreach>
+    )
+  </delete>
+  
+  <select id="getListWithPage" resultType="fitnessroom.base.model.Equipments" parameterType="fitnessroom.base.model.Equipments" >
+    select * from equipments
+    where 1=1
+    <if test="equipmentid != null" >
+      and equipmentId = #{equipmentid}
+    </if>
+    <if test="equipmentname != null" >
+      and equipmentName = #{equipmentname}
+    </if>
+    <if test="equipmentcontent != null" >
+      and equipmentContent = #{equipmentcontent}
+    </if>
+  </select>
+  
+  <select id="count" resultType="java.lang.Long" parameterType="fitnessroom.base.model.Equipments" >
+    select count(*) from equipments
+    where 1=1
+    <if test="equipmentid != null" >
+      and equipmentId = #{equipmentid}
+    </if>
+    <if test="equipmentname != null" >
+      and equipmentName = #{equipmentname}
+    </if>
+    <if test="equipmentcontent != null" >
+      and equipmentContent = #{equipmentcontent}
+    </if>
+  </select>
+  
+</mapper>
