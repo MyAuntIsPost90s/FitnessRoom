@@ -95,7 +95,7 @@
                     $('#div-realname').html(data.data.realname);
                     $('#div-username').html(data.data.username);
                     $('#img-userhead').attr('src',data.data.headimgurl==''?'../Contents/images/dfthead.png':Config.UrlHead+data.data.headimgurl);
-                    $('#a-userid').attr('data-id','Courses/courseset.html?id='+data.data.userid)
+                    $('#a-userid').attr('data-id','Courses/courseset.html?id='+data.data.userid);
                     return;
                 }
                 layer.msg(data.msg);

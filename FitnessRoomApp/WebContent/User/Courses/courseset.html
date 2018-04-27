@@ -161,7 +161,8 @@
         //加载课表
         function loadUserCourse() {
             $.post(Config.UrlHead+'/usercourses/list',
-            function(data){
+            ,{userid:userid}
+            ,function(data){
                 if(data.code!=1){
                     layer.msg(data.msg);
                     return;
