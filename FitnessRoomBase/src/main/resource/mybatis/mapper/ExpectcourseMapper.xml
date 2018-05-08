@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="fitnessroom.base.dao.ExpectcourseMapper" >
+  <select id="getList" resultType="fitnessroom.base.model.Expectcourse" parameterType="fitnessroom.base.model.Expectcourse" >
+    select * from expectcourse
+    where 1=1
+    <if test="expectcourseid != null" >
+      and expectCourseId = #{expectcourseid}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="courseid != null" >
+      and courseId = #{courseid}
+    </if>
+  </select>
+  
+  <select id="getSingle" resultType="fitnessroom.base.model.Expectcourse" >
+    select * from expectcourse
+    where expectCourseId = #{id}
+    limit 0,1
+  </select>
+  
+  <insert id="insert" parameterType="fitnessroom.base.model.Expectcourse" >
+    insert into expectcourse
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="expectcourseid != null" >
+        expectCourseId,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="courseid != null" >
+        courseId
+      </if>
+    </trim>
+    <trim prefix="values(" suffix=")" suffixOverrides="," >
+      <if test="expectcourseid != null" >
+        #{expectcourseid},
+      </if>
+      <if test="userid != null" >
+        #{userid},
+      </if>
+      <if test="courseid != null" >
+        #{courseid}
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="update" parameterType="fitnessroom.base.model.Expectcourse" >
+    update expectcourse
+    <set >
+      <if test="userid != null" >
+        userId = #{userid},
+      </if>
+      <if test="courseid != null" >
+        courseId = #{courseid}
+      </if>
+    </set>
+    where
+    expectCourseId = #{expectcourseid}
+  </update>
+  
+  <delete id="batchDelete" >
+    delete from expectcourse
+    where expectCourseId in(
+    <foreach item="item" collection="list" separator="," >
+      #{item}
+    </foreach>
+    )
+  </delete>
+  
+  <select id="getListWithPage" resultType="fitnessroom.base.model.Expectcourse" parameterType="fitnessroom.base.model.Expectcourse" >
+    select * from expectcourse
+    where 1=1
+    <if test="expectcourseid != null" >
+      and expectCourseId = #{expectcourseid}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="courseid != null" >
+      and courseId = #{courseid}
+    </if>
+  </select>
+  
+  <select id="count" resultType="java.lang.Long" parameterType="fitnessroom.base.model.Expectcourse" >
+    select count(*) from expectcourse
+    where 1=1
+    <if test="expectcourseid != null" >
+      and expectCourseId = #{expectcourseid}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="courseid != null" >
+      and courseId = #{courseid}
+    </if>
+  </select>
+  
+  <select id="getCourseCount" resultType="fitnessroom.base.model.dto.ExpectcourseDto" parameterType="fitnessroom.base.model.Expectcourse">
+  	SELECT courseid,COUNT(*) count FROM expectcourse
+  	where 1=1
+    <if test="expectcourseid != null" >
+      and expectCourseId = #{expectcourseid}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="courseid != null" >
+      and courseId = #{courseid}
+    </if>
+	GROUP BY courseId
+	order by count desc
+  </select>
+  
+</mapper>

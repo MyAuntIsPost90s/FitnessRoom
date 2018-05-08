@@ -7,6 +7,8 @@ public class Equipments {
 
     private String equipmentcontent;
 
+    private Integer equipmentcount;
+
     public String getEquipmentid() {
         return equipmentid;
     }
@@ -29,5 +31,13 @@ public class Equipments {
 
     public void setEquipmentcontent(String equipmentcontent) {
         this.equipmentcontent = equipmentcontent;
+    }
+
+    public Integer getEquipmentcount() {
+        return equipmentcount;
+    }
+
+    public void setEquipmentcount(Integer equipmentcount) {
+        this.equipmentcount = equipmentcount;
     }
 }

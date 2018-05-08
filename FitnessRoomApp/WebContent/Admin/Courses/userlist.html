@@ -19,6 +19,29 @@
 <div class="easyui-layout" data-options='fit:"true"'>
     <table id="table-user"></table>
 </div>
+<script id="lay-usernote" type="text/html">
+    <div style="width: 100%;height:350px">
+        <table class="layui-table" lay-skin="line" style="margin:-1px 0">
+            <colgroup>
+                <col width="100">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>用户课程</th>
+            </tr>
+            </thead>
+        </table>
+        <div style="height: 270px;overflow-y: auto;border: 1px solid #e6e6e6;">
+            <table class="layui-table" lay-skin="line" style="margin: 0">
+                <colgroup>
+                    <col width="100">
+                </colgroup>
+                <tbody id="tb-course"></tbody>
+            </table>
+        </div>
+    </div>
+</script>
+<script src="../../Contents/lib/layui/layui.all.js"></script>
 <script>
     $(function () {
         initDataGrid();
@@ -36,17 +59,50 @@
         });
     }
 
+    //展示用户备注
+    function showUserNote(userid){
+        $.post(Config.UrlHead + "/expectCourses/list"
+            ,{userid:userid,page:1,rows:9999}
+            ,function(data){
+                if(data.code!=1){
+                    layer.msg(data.msg);
+                    return;
+                }
+                layer.open({
+                    type: 1
+                    , area: ['500px', '400px']
+                    , title: '选课信息'
+                    , content: $('#lay-usernote').html()
+                    , success: function () {
+                        var arr = data.data.rows;
+                        var html = '';
+                        if(arr.length<1||arr[0]==null||arr[0]==''){
+                            html+='<tr><td>暂无</td></tr>';
+                        }
+                        for (var i = 0; i < arr.length; i++) {
+                            if(arr[i]==''){
+                                continue;
+                            }
+                            html+='<tr><td>'+arr[i].coursename+'</td></tr>';
+                        }
+                        $('#tb-course').html(html);
+                    }
+                });
+            },'json')
+    }
+
     //获取列
     function getColumns(){
         var columns=[[
             {field:'ck',checkbox:true},
             {
                 field:'userid',
-                width:50,
+                width:100,
                 align:'center',
                 title:"操作",
                 formatter:function(val,row){
-                    return '<a class="layui-btn layui-btn-xs" href="courseset.html?id='+ val +'" ><i class="layui-icon">&#xe637;</i>设置课程</a>';
+                    return '<a class="layui-btn layui-btn-xs" href="courseset.html?id='+ val +'" ><i class="layui-icon">&#xe637;</i>设置课程</a>'
+                        +'<button class="layui-btn layui-btn-xs layui-btn-normal" onclick="showUserNote(\''+val+'\')"><i class="layui-icon">&#xe629;</i>查看选课</button> ';
                 }
             },
             {field:'username',width:100,align:'center',title:"用户名"},

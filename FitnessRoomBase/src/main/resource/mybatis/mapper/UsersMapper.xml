@@ -34,6 +34,9 @@
     <if test="phone != null" >
       and phone = #{phone}
     </if>
+    <if test="note != null" >
+      and note = #{note}
+    </if>
   </select>
   
   <select id="getSingle" resultType="fitnessroom.base.model.Users" >
@@ -73,7 +76,10 @@
         createTime,
       </if>
       <if test="phone != null" >
-        phone
+        phone,
+      </if>
+      <if test="note != null" >
+        note
       </if>
     </trim>
     <trim prefix="values(" suffix=")" suffixOverrides="," >
@@ -105,7 +111,10 @@
         #{createtime},
       </if>
       <if test="phone != null" >
-        #{phone}
+        #{phone},
+      </if>
+      <if test="note != null" >
+        #{note}
       </if>
     </trim>
   </insert>
@@ -138,7 +147,10 @@
         createTime = #{createtime},
       </if>
       <if test="phone != null" >
-        phone = #{phone}
+        phone = #{phone},
+      </if>
+      <if test="note != null" >
+        note = #{note}
       </if>
     </set>
     where
@@ -187,6 +199,9 @@
     <if test="phone != null" >
       and phone = #{phone}
     </if>
+    <if test="note != null" >
+      and note = #{note}
+    </if>
   </select>
   
   <select id="count" resultType="java.lang.Long" parameterType="fitnessroom.base.model.Users" >
@@ -221,6 +236,9 @@
     </if>
     <if test="phone != null" >
       and phone = #{phone}
+    </if>
+    <if test="note != null" >
+      and note = #{note}
     </if>
   </select>
   

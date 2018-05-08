@@ -13,6 +13,9 @@
     <if test="equipmentcontent != null" >
       and equipmentContent = #{equipmentcontent}
     </if>
+    <if test="equipmentcount != null" >
+      and equipmentCount = #{equipmentcount}
+    </if>
   </select>
   
   <select id="getSingle" resultType="fitnessroom.base.model.Equipments" >
@@ -31,7 +34,10 @@
         equipmentName,
       </if>
       <if test="equipmentcontent != null" >
-        equipmentContent
+        equipmentContent,
+      </if>
+      <if test="equipmentcount != null" >
+        equipmentCount
       </if>
     </trim>
     <trim prefix="values(" suffix=")" suffixOverrides="," >
@@ -42,7 +48,10 @@
         #{equipmentname},
       </if>
       <if test="equipmentcontent != null" >
-        #{equipmentcontent}
+        #{equipmentcontent},
+      </if>
+      <if test="equipmentcount != null" >
+        #{equipmentcount}
       </if>
     </trim>
   </insert>
@@ -54,7 +63,10 @@
         equipmentName = #{equipmentname},
       </if>
       <if test="equipmentcontent != null" >
-        equipmentContent = #{equipmentcontent}
+        equipmentContent = #{equipmentcontent},
+      </if>
+      <if test="equipmentcount != null" >
+        equipmentCount = #{equipmentcount}
       </if>
     </set>
     where
@@ -82,6 +94,9 @@
     <if test="equipmentcontent != null" >
       and equipmentContent = #{equipmentcontent}
     </if>
+    <if test="equipmentcount != null" >
+      and equipmentCount = #{equipmentcount}
+    </if>
   </select>
   
   <select id="count" resultType="java.lang.Long" parameterType="fitnessroom.base.model.Equipments" >
@@ -95,6 +110,9 @@
     </if>
     <if test="equipmentcontent != null" >
       and equipmentContent = #{equipmentcontent}
+    </if>
+    <if test="equipmentcount != null" >
+      and equipmentCount = #{equipmentcount}
     </if>
   </select>
   

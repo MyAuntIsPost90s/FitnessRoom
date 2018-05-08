@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的课表</title>
+    <link rel="stylesheet" href="../../Contents/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/easyui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/icon.css">
+    <script src="../../Contents/js/config.js"></script>
+    <script src="../../Contents/js/jquery.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/jquery.easyui.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../Contents/js/easyui.util.js"></script>
+    <script src="../../Contents/lib/lingshiframework/lingshi_base.js"></script>
+    <script src="../../Contents/js/md5.js"></script>
+    <script src="../../Contents/js/layui.util.js"></script>
+</head>
+<body>
+<div class="easyui-layout" data-options='fit:"true"'>
+    <div data-options='region:"center"'>
+        <table id="table-course"></table>
+    </div>
+    <div data-options='region:"east"' style="width: 400px">
+        <h4 style="color: #888;padding: 10px 10px;border-bottom: 1px solid #e8e8e8">我的预定课表</h4>
+        <div style="width: 100%;height:450px">
+            <table class="layui-table" lay-skin="line" style="margin:-1px 0">
+                <colgroup>
+                    <col width="100">
+                    <col width="150">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>操作</th>
+                    <th>名称</th>
+                </tr>
+                </thead>
+            </table>
+            <div style="height: 370px;overflow-y: auto;border: 1px solid #e6e6e6;">
+                <table class="layui-table" lay-skin="line" style="margin: 0">
+                    <colgroup>
+                        <col width="100">
+                        <col width="150">
+                    </colgroup>
+                    <tbody id="tb-expectcourse"></tbody>
+                </table>
+            </div>
+            <button type="button" id="btn-goodsimg" class="layui-btn layui-btn-normal" style="float: right;margin: 5px"
+                    onclick="save()"><i class="layui-icon">&#xe621;</i>保存
+            </button>
+        </div>
+    </div>
+</div>
+<script src="../../Contents/lib/layui/layui.all.js"></script>
+<script>
+    $(function () {
+        initDataGrid();
+        initExpectCourse();
+    })
+
+    //保存我的预约课表
+    function save() {
+        var list = [];
+        $('#tb-expectcourse tr').each(function () {
+            var $tr = $(this);
+            var courseid = $tr.attr('data-id');
+            list.push({courseid: courseid})
+        });
+        if (list.length < 1) {
+            layer.msg('至少需要一门课');
+            return;
+        }
+        layer.confirm("是否确定保存?", function (index) {
+            $.ajax({
+                url: Config.UrlHead + '/expectCourses/update',
+                contentType: "application/json ; charset=utf-8",
+                data: JSON.stringify(list),
+                method: 'post',
+                dataType: 'json',
+                success: function (data) {
+                    layer.close(index);
+                    layer.msg(data.msg);
+                    if (data.code == 1) {
+                        $('#table-goods').datagrid('reload');
+                        $('#tb-usernote').html('');
+                    }
+                }
+            });
+        });
+    }
+
+    //获取我的期望课表
+    function initExpectCourse(){
+        $.post(Config.UrlHead + "/expectCourses/list4user"
+            ,{page:1,rows:999}
+            ,function(data){
+                if(data.code!=1){
+                    layer.msg(data.msg);
+                    return;
+                }
+                addInCourse(data.data.rows);
+            },'json')
+    }
+
+    //初始化表格数据
+    function initDataGrid() {
+        EasyUIUtil.initDataGrid('#table-course', Config.UrlHead + "/courses/list",getColumns(),{coursetype:1});
+        var pager=$('#table-course').datagrid('getPager');
+        pager.pagination({
+            showPageList: true,
+            buttons: [{
+                iconCls: 'icon-add',
+                handler: function () {
+                    var rows=$('#table-course').datagrid('getChecked');
+                    addInCourse(rows);
+                }
+            }],
+            onBeforeRefresh: function () {
+                return true;
+            }
+        });
+    }
+
+    //添加入期望课表
+    function addInCourse(rows) {
+        if(rows==null||rows.length<1){
+            return;
+        }
+        var html = '';
+        for (var i = 0; i < rows.length; i++) {
+            var $tr = $('tr[data-id=' + rows[i].courseid + ']');
+            if ($tr.length > 0) {
+                continue;
+            }
+            var temp = '<tr data-id="' + rows[i].courseid + '" >'
+                + '<td><button class="layui-btn layui-btn-xs layui-btn-danger" onclick="$(this).parent().parent().remove()"><i class="layui-icon">&#xe640;</i>移除</button></td>'
+                + '<td><div style="width: 100px;overflow-x: hidden" class="div-name">' + rows[i].coursename + '</div></td>'
+                + '</tr>';
+            html += temp;
+        }
+        $('#tb-expectcourse').append(html);
+    }
+
+    //添加单条
+    function addSingleInCourse(courseid,coursename){
+        var $tr = $('tr[data-id=' + courseid + ']');
+        if ($tr.length > 0) {
+            return;
+        }
+        $('#tb-expectcourse').append('<tr data-id="'+courseid+'"><td><button class="layui-btn layui-btn-xs layui-btn-danger" onclick="$(this).parent().parent().remove()"><i class="layui-icon">&#xe640;</i>移除</button></td>'
+        +'<td><div style="width: 100px;overflow-x: hidden" class="div-name">'+coursename+'</div></td></tr>');
+    }
+
+    //获取列
+    function getColumns() {
+        var columns=[[
+            {field:'ck',checkbox:true},
+            {
+                field:'courseid',
+                width:50,
+                align:'center',
+                title:"操作",
+                formatter:function(val,row){
+                    return'<button class="layui-btn layui-btn-xs" onclick="addSingleInCourse(\'' + val + '\',\''+row.coursename+'\')"><i class="layui-icon">&#xe61f;</i>添加</button>'
+                }
+            },
+            {field:'coursename',width:100,align:'center',title:"课程名称"},
+            {field:'coursecontent',width:100,align:'center',title:"备注"}
+        ]];
+        return columns;
+    }
+</script>
+</body>
+</html>

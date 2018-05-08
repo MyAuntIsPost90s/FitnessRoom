@@ -160,7 +160,7 @@
 
         //加载课表
         function loadUserCourse() {
-            $.post(Config.UrlHead+'/usercourses/list',
+            $.post(Config.UrlHead+'/usercourses/list'
             ,{userid:userid}
             ,function(data){
                 if(data.code!=1){
@@ -190,7 +190,7 @@
 
                 $('#date-begin').val(begintime);
                 $('#date-end').val(endtime);
-                bindUserCourseItemEvent('.layui-table .courseitem');
+                //bindUserCourseItemEvent('.layui-table .courseitem');
             },'json')
         }
 

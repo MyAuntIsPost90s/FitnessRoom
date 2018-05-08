@@ -31,6 +31,12 @@
                 </div>
             </div>
             <div class="layui-form-item">
+                <label class="layui-form-label">数量</label>
+                <div class="layui-input-block">
+                    <input type="number" name="equipmentcount" required placeholder="请输入数量" data-valid="name:'数量',length:[1,2]" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
                 <label class="layui-form-label">备注</label>
                 <div class="layui-input-block">
                     <input type="text" name="equipmentcontent" required placeholder="请输入备注" data-valid="name:'设备名',length:[1,50]" autocomplete="off" class="layui-input">
@@ -206,6 +212,7 @@
                 }
             },
             {field:'equipmentname',width:100,align:'center',title:"设备名称"},
+            {field:'equipmentcount',width:100,align:'center',title:"数量"},
             {field:'equipmentcontent',width:100,align:'center',title:"备注"}
         ]];
         return columns;
