@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="fitnessroom.base.dao.NoticesMapper" >
+  <select id="getList" resultType="fitnessroom.base.model.Notices" parameterType="fitnessroom.base.model.Notices" >
+    select * from notices
+    where 1=1
+    <if test="noticeid != null" >
+      and noticeId = #{noticeid}
+    </if>
+    <if test="noticetitle != null" >
+      and noticeTitle = #{noticetitle}
+    </if>
+    <if test="noticetime != null" >
+      and noticeTime = #{noticetime}
+    </if>
+    <if test="noticecontent != null" >
+      and noticeContent = #{noticecontent}
+    </if>
+  </select>
+  
+  <select id="getSingle" resultType="fitnessroom.base.model.Notices" >
+    select * from notices
+    where noticeId = #{id}
+    limit 0,1
+  </select>
+  
+  <insert id="insert" parameterType="fitnessroom.base.model.Notices" >
+    insert into notices
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="noticeid != null" >
+        noticeId,
+      </if>
+      <if test="noticetitle != null" >
+        noticeTitle,
+      </if>
+      <if test="noticetime != null" >
+        noticeTime,
+      </if>
+      <if test="noticecontent != null" >
+        noticeContent
+      </if>
+    </trim>
+    <trim prefix="values(" suffix=")" suffixOverrides="," >
+      <if test="noticeid != null" >
+        #{noticeid},
+      </if>
+      <if test="noticetitle != null" >
+        #{noticetitle},
+      </if>
+      <if test="noticetime != null" >
+        #{noticetime},
+      </if>
+      <if test="noticecontent != null" >
+        #{noticecontent}
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="update" parameterType="fitnessroom.base.model.Notices" >
+    update notices
+    <set >
+      <if test="noticetitle != null" >
+        noticeTitle = #{noticetitle},
+      </if>
+      <if test="noticetime != null" >
+        noticeTime = #{noticetime}
+      </if>
+    </set>
+    where
+    noticeId = #{noticeid}
+  </update>
+  
+  <delete id="batchDelete" >
+    delete from notices
+    where noticeId in(
+    <foreach item="item" collection="list" separator="," >
+      #{item}
+    </foreach>
+    )
+  </delete>
+  
+  <select id="getListWithPage" resultType="fitnessroom.base.model.Notices" parameterType="fitnessroom.base.model.Notices" >
+    select * from notices
+    where 1=1
+    <if test="noticeid != null" >
+      and noticeId = #{noticeid}
+    </if>
+    <if test="noticetitle != null" >
+      and noticeTitle = #{noticetitle}
+    </if>
+    <if test="noticetime != null" >
+      and noticeTime = #{noticetime}
+    </if>
+    <if test="noticecontent != null" >
+      and noticeContent = #{noticecontent}
+    </if>
+  </select>
+  
+  <select id="count" resultType="java.lang.Long" parameterType="fitnessroom.base.model.Notices" >
+    select count(*) from notices
+    where 1=1
+    <if test="noticeid != null" >
+      and noticeId = #{noticeid}
+    </if>
+    <if test="noticetitle != null" >
+      and noticeTitle = #{noticetitle}
+    </if>
+    <if test="noticetime != null" >
+      and noticeTime = #{noticetime}
+    </if>
+    <if test="noticecontent != null" >
+      and noticeContent = #{noticecontent}
+    </if>
+  </select>
+  
+</mapper>

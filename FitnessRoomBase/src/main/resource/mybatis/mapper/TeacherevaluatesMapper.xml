@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="fitnessroom.base.dao.TeacherevaluatesMapper" >
+  <select id="getList" resultType="fitnessroom.base.model.Teacherevaluates" parameterType="fitnessroom.base.model.Teacherevaluates" >
+    select * from teacherevaluates
+    where 1=1
+    <if test="teacherevaluateid != null" >
+      and teacherevaluateId = #{teacherevaluateid}
+    </if>
+    <if test="teacherid != null" >
+      and teacherId = #{teacherid}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="teacherscore != null" >
+      and teacherScore = #{teacherscore}
+    </if>
+    <if test="teacherevaluatetime != null" >
+      and teacherevaluateTime = #{teacherevaluatetime}
+    </if>
+  </select>
+  
+  <select id="getSingle" resultType="fitnessroom.base.model.Teacherevaluates" >
+    select * from teacherevaluates
+    where teacherevaluateId = #{id}
+    limit 0,1
+  </select>
+  
+  <insert id="insert" parameterType="fitnessroom.base.model.Teacherevaluates" >
+    insert into teacherevaluates
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="teacherevaluateid != null" >
+        teacherevaluateId,
+      </if>
+      <if test="teacherid != null" >
+        teacherId,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="teacherscore != null" >
+        teacherScore,
+      </if>
+      <if test="teacherevaluatetime != null" >
+        teacherevaluateTime
+      </if>
+    </trim>
+    <trim prefix="values(" suffix=")" suffixOverrides="," >
+      <if test="teacherevaluateid != null" >
+        #{teacherevaluateid},
+      </if>
+      <if test="teacherid != null" >
+        #{teacherid},
+      </if>
+      <if test="userid != null" >
+        #{userid},
+      </if>
+      <if test="teacherscore != null" >
+        #{teacherscore},
+      </if>
+      <if test="teacherevaluatetime != null" >
+        #{teacherevaluatetime}
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="update" parameterType="fitnessroom.base.model.Teacherevaluates" >
+    update teacherevaluates
+    <set >
+      <if test="teacherid != null" >
+        teacherId = #{teacherid},
+      </if>
+      <if test="userid != null" >
+        userId = #{userid},
+      </if>
+      <if test="teacherscore != null" >
+        teacherScore = #{teacherscore},
+      </if>
+      <if test="teacherevaluatetime != null" >
+        teacherevaluateTime = #{teacherevaluatetime}
+      </if>
+    </set>
+    where
+    teacherevaluateId = #{teacherevaluateid}
+  </update>
+  
+  <delete id="batchDelete" >
+    delete from teacherevaluates
+    where teacherevaluateId in(
+    <foreach item="item" collection="list" separator="," >
+      #{item}
+    </foreach>
+    )
+  </delete>
+  
+  <select id="getListWithPage" resultType="fitnessroom.base.model.Teacherevaluates" parameterType="fitnessroom.base.model.Teacherevaluates" >
+    select * from teacherevaluates
+    where 1=1
+    <if test="teacherevaluateid != null" >
+      and teacherevaluateId = #{teacherevaluateid}
+    </if>
+    <if test="teacherid != null" >
+      and teacherId = #{teacherid}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="teacherscore != null" >
+      and teacherScore = #{teacherscore}
+    </if>
+    <if test="teacherevaluatetime != null" >
+      and teacherevaluateTime = #{teacherevaluatetime}
+    </if>
+  </select>
+  
+  <select id="count" resultType="java.lang.Long" parameterType="fitnessroom.base.model.Teacherevaluates" >
+    select count(*) from teacherevaluates
+    where 1=1
+    <if test="teacherevaluateid != null" >
+      and teacherevaluateId = #{teacherevaluateid}
+    </if>
+    <if test="teacherid != null" >
+      and teacherId = #{teacherid}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="teacherscore != null" >
+      and teacherScore = #{teacherscore}
+    </if>
+    <if test="teacherevaluatetime != null" >
+      and teacherevaluateTime = #{teacherevaluatetime}
+    </if>
+  </select>
+  
+  <select id="getCountList" resultType="fitnessroom.base.model.dto.TeacherEvaluateDto">
+  	SELECT 
+  	t.teacherId
+  	, t.teacherName
+  	, IFNULL(SUM(teacherScore),0) teacherScore 
+  	, (select count(*) from teacherevaluates where teacherid=te.teacherid and userid=#{userid}) evaluated
+  	FROM teachers t
+  	left join teacherevaluates te on t.teacherId=te.teacherId
+  	GROUP BY t.teacherId,t.teacherName
+  	order by teacherScore desc
+  </select>
+  
+</mapper>

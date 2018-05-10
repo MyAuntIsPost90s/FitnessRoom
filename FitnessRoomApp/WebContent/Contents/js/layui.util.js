@@ -69,3 +69,30 @@ FormUtil={
         return true;
     }
 }
+
+
+//编辑器加载器
+var EditModel = {
+    build: function (id, option) {
+        var layedit = layui.layedit;
+        layedit.set({
+            uploadImage: {
+                url: Config.UrlHead + '/uploader/uploadImg' //接口url
+                , type: 'post' //默认post
+            }
+        });
+        return layedit.build(id, option); //建立编辑器
+    },
+    setContent: function (tag, val) {   //设置值
+        try {
+            var layedit = layui.layedit;
+            layedit.setContent(tag, val);
+        } catch (err) {
+            //不做处理
+        }
+    },
+    getContent: function (tag) {   //获取值
+        var layedit = layui.layedit;
+        return layedit.getContent(tag);
+    }
+}

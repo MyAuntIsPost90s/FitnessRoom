@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>公告编辑</title>
+    <link rel="stylesheet" href="../../Contents/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/easyui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/icon.css">
+    <script src="../../Contents/js/config.js"></script>
+    <script src="../../Contents/js/jquery.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/jquery.easyui.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../Contents/js/easyui.util.js"></script>
+    <script src="../../Contents/lib/lingshiframework/lingshi_base.js?version=0.0.3"></script>
+    <script src="../../Contents/js/md5.js"></script>
+    <script src="../../Contents/js/layui.util.js"></script>
+</head>
+<body>
+<div class="easyui-layout" data-options='fit:"true"'>
+    <div data-options='region:"east"' style="width: 320px">
+        <form class="layui-form" id="form-notice" style="padding: 10px">
+            <input name="noticeid" type="hidden" />
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-inline" style="width: 50px">标题</label>
+                <div class="layui-input-inline" style="width: 170px;">
+                    <input type="text" name="noticetitle" placeholder="请输入商品名称" data-valid="name:'商品名称',length:[1,20]"
+                           autocomplete="off" class="layui-input"  />
+                </div>
+            </div>
+            <div class="layui-form-item" style="text-align: right;padding:0 25px">
+                <button type="button" class="layui-btn layui-btn-sm" onclick="save()"><i class="layui-icon">&#xe618;</i>保存</button>
+            </div>
+        </form>
+    </div>
+    <div id="div-paper" data-options='region:"center"'>
+        <textarea id="ta-noticecontent" style="display: none;"></textarea>
+    </div>
+</div>
+</body>
+<script src="../../Contents/lib/layui/layui.all.js"></script>
+<script>
+    var pageType='add';
+    var layedittag=-1;
+    var noticeid=null;
+    $(function(){
+        noticeid=LingShiUtil.getParam("noticeid");
+        pageType=LingShiUtil.getParam("type");
+        layedittag=EditModel.build('ta-noticecontent',{height:(window.innerHeight-50)+"px"}); //建立编辑器
+
+        if(pageType=='edit'){
+            loadEditInfo();
+        }
+    })
+
+    //加载编辑信息
+    function loadEditInfo(){
+        var noticeid=LingShiUtil.getParam("noticeid");
+        $.post(Config.UrlHead+'/notice/single'
+            ,{noticeid:noticeid}
+            ,function(data){
+                if(data.code!=1){
+                    layer.msg(data.msg);
+                    return;
+                }
+                EditModel.setContent(layedittag,data.data.noticecontent);
+                FormUtil.loadForm("#form-notice",data.data);
+            },'json');
+    }
+
+    //保存
+    function save(){
+        var postData=FormUtil.getFormMap("#form-notice");
+        if(postData==null||postData==''){
+            return;
+        }
+
+        postData.noticecontent=EditModel.getContent(layedittag);
+        var url=Config.UrlHead+'/notice/add';
+        if(pageType=='edit'){
+            url=Config.UrlHead+'/notice/update';
+        }
+        $.post(url
+            ,postData
+            ,function (data) {
+                if(data.code!=1){
+                    layer.msg(data.msg);
+                    return;
+                }
+                layer.open({
+                    type: 1
+                    , area: ['200px','120px']
+                    , time: 2000
+                    , title: '提示'
+                    , content: '<div style="text-align: center;font-size: 14px;line-height: 50px">保存成功，正在跳转...</div>'
+                    , end: function () {
+                        window.opener = null;
+                        window.close();
+                    }
+                })
+            },'json')
+    }
+</script>
+</html>

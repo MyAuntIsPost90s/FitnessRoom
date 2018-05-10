@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>教练列表</title>
+    <link rel="stylesheet" href="../../Contents/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/easyui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/icon.css">
+    <script src="../../Contents/js/config.js"></script>
+    <script src="../../Contents/js/jquery.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/jquery.easyui.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../Contents/js/easyui.util.js"></script>
+    <script src="../../Contents/lib/lingshiframework/lingshi_base.js"></script>
+    <script src="../../Contents/js/md5.js"></script>
+    <script src="../../Contents/js/layui.util.js"></script>
+</head>
+<body>
+    <div class="easyui-layout" data-options='fit:"true"'>
+        <table id="table-teacherevaluates"></table>
+    </div>
+    <script id="lay-teacherevaluates" type="text/html">
+        <div style="padding: 10px;padding-right: 30px">
+            <form class="layui-form" id="form-teacherevaluates">
+                <input type="hidden" name="teacherid" />
+                <input type="hidden" name="type" id="opt-type" type="add" >
+                <div class="layui-form-item">
+                    <label class="layui-form-label">评价:</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="teacherscore" value="-1" title="不满意" />
+                        <input type="radio" name="teacherscore" value="1" title="一般" />
+                        <input type="radio" name="teacherscore" value="2" checked title="满意" />
+                    </div>
+                </div>
+                <div class="layui-form-item" style="text-align: right">
+                    <button type="button" class="layui-btn" onclick="save()">提交</button>
+                </div>
+            </form>
+        </div>
+    </script>
+    <script src="../../Contents/lib/layui/layui.all.js"></script>
+    <script>
+        $(function () {
+            initDataGrid();
+        })
+
+        //保存
+        function save() {
+            var postData=FormUtil.getFormMap("#form-teacherevaluates");
+            if(postData==null||postData==''){
+                return;
+            }
+            var url=Config.UrlHead+'/teacherEvaluates/add';
+            if(postData.type=='edit'){
+                url=Config.UrlHead+'/teacherEvaluates/update';
+            }
+            $.post(url
+                ,postData
+                ,function (data) {
+                    if(data.code==1){
+                        layer.closeAll();
+                    }
+                    layer.msg(data.msg);
+                    $('#table-teacherevaluates').datagrid('reload');
+                },'json')
+        }
+
+        //展示编辑框
+        function showEdit(teacherid){
+            var index = layer.open({type:3});
+            $.post(Config.UrlHead+'/teacherEvaluates/single'
+                    ,{teacherid:teacherid}
+                    ,function (data) {
+                        layer.close(index);
+                        layer.open({
+                            type:1
+                            ,title:'评价'
+                            ,content:$('#lay-teacherevaluates').html()
+                            ,success:function(){
+                                $('#opt-type').val('edit');
+                                if(data.code==1){
+                                    FormUtil.loadForm('#form-teacherevaluates',data.data);
+                                }else {
+                                    layer.msg(data.msg);
+                                }
+                                layui.form.render();
+                            }
+                        })
+                },'json');
+        }
+
+        //展示添加框
+        function showAdd(teacherid){
+            layer.open({
+                type:1
+                ,title:'评价'
+                ,content:$('#lay-teacherevaluates').html()
+                ,success:function(){
+                    FormUtil.loadForm('#form-teacherevaluates',{teacherid:teacherid});
+                    layui.form.render();
+                }
+            })
+        }
+
+        //初始化表格数据
+        function initDataGrid() {
+            EasyUIUtil.initDataGrid('#table-teacherevaluates', Config.UrlHead + "/teacherEvaluates/list4count",getColumns());
+        }
+
+        //获取列
+        function getColumns(){
+            var columns=[[
+                {
+                    field:'teacherid',
+                    width:50,
+                    align:'center',
+                    title:"操作",
+                    formatter:function(val,row){
+                        if(row.evaluated>0){
+                            return '<button class="layui-btn layui-btn-xs layui-btn-disabled"><i class="layui-icon">&#xe642;</i>已评价</button>'
+                                +'<button class="layui-btn layui-btn-xs" onclick="showEdit(\''+val+'\')"><i class="layui-icon">&#xe60a;</i>修改</button>';
+                        }
+                        return '<button class="layui-btn layui-btn-xs" onclick="showAdd(\'' + val + '\')"><i class="layui-icon">&#xe642;</i>评价</button>';
+                    }
+                },
+                {field:'teachername',width:100,align:'center',title:"姓名"},
+                {field:'teacherscore',width:100,align:'center',title:"分值"}
+            ]];
+            return columns;
+        }
+    </script>
+</body>
+</html>
