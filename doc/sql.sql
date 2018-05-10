@@ -62,6 +62,39 @@ CREATE TABLE `expectcourse` (
 
 insert  into `expectcourse`(`expectCourseId`,`userId`,`courseId`) values ('E38615575902210','U87116060112117','C29113354441812'),('U74022374534210','U74022374534210','C29113354441812');
 
+/*Table structure for table `notices` */
+
+DROP TABLE IF EXISTS `notices`;
+
+CREATE TABLE `notices` (
+  `noticeId` varchar(50) NOT NULL COMMENT '编号',
+  `noticeTitle` varchar(100) NOT NULL DEFAULT '' COMMENT '标题',
+  `noticeContent` text NOT NULL COMMENT '内容',
+  `noticeTime` datetime NOT NULL DEFAULT '2014-01-01 00:00:00' COMMENT '通知时间',
+  PRIMARY KEY (`noticeId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Data for the table `notices` */
+
+insert  into `notices`(`noticeId`,`noticeTitle`,`noticeContent`,`noticeTime`) values ('N64617414265011','测试通知','123','2018-05-10 17:41:43');
+
+/*Table structure for table `teacherevaluates` */
+
+DROP TABLE IF EXISTS `teacherevaluates`;
+
+CREATE TABLE `teacherevaluates` (
+  `teacherevaluateId` varchar(50) NOT NULL COMMENT '编号',
+  `teacherId` varchar(50) NOT NULL COMMENT '教师编号',
+  `userId` varchar(50) NOT NULL COMMENT '用户编号',
+  `teacherScore` int(11) NOT NULL DEFAULT '0' COMMENT '教师评分 -1差评 1一般 2满意',
+  `teacherevaluateTime` datetime NOT NULL COMMENT '评价时间',
+  PRIMARY KEY (`teacherevaluateId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Data for the table `teacherevaluates` */
+
+insert  into `teacherevaluates`(`teacherevaluateId`,`teacherId`,`userId`,`teacherScore`,`teacherevaluateTime`) values ('LG17615122567211','U13219594622111','U87116060112117',2,'2018-05-10 15:12:26'),('LG38615123421912','U43520002528213','U87116060112117',1,'2018-05-10 15:12:34'),('LG68315123996313','U95220011637215','U87116060112117',1,'2018-05-10 15:12:40');
+
 /*Table structure for table `teachers` */
 
 DROP TABLE IF EXISTS `teachers`;
