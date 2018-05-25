@@ -13,10 +13,10 @@ public interface UsersService {
 
 	public EUIPageList<Users> getList(Users user, int page, int rows);
 
-	public void add(Users user);
+	public void add(Users user) throws Exception;
 
 	public void update(Users user);
-	
+
 	public void delete(List<String> ids);
 
 }

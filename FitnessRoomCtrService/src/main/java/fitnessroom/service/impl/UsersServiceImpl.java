@@ -50,12 +50,17 @@ public class UsersServiceImpl implements UsersService {
 
 	@Override
 	public EUIPageList<Users> getList(Users user, int page, int rows) {
-		PageList<Users> pageList =usersMapper.getListWithPage(user, new PageBounds(page,rows));
+		PageList<Users> pageList = usersMapper.getListWithPage(user, new PageBounds(page, rows));
 		return new EUIPageList<Users>(pageList.getPaginator().getTotalCount(), pageList);
 	}
 
 	@Override
-	public void add(Users user) {
+	public void add(Users user) throws Exception {
+		Users userQ = new Users();
+		userQ.setUsername(user.getUsername());
+		if (usersMapper.count(userQ) > 0) {
+			throw new Exception("用户名重复");
+		}
 		user.setUserid(RandomNum.getUID());
 		user.setCreatetime(new Date());
 		usersMapper.insert(user);
