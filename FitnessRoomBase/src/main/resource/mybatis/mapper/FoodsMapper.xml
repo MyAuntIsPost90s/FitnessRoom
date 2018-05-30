@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="fitnessroom.base.dao.FoodsMapper" >
+  <select id="getList" resultType="fitnessroom.base.model.Foods" parameterType="fitnessroom.base.model.Foods" >
+    select * from foods
+    where 1=1
+    <if test="foodid != null" >
+      and foodId = #{foodid}
+    </if>
+    <if test="foodname != null" >
+      and foodName = #{foodname}
+    </if>
+    <if test="foodcontent != null" >
+      and foodContent = #{foodcontent}
+    </if>
+    <if test="foodimgurl != null" >
+      and foodImgUrl = #{foodimgurl}
+    </if>
+    <if test="foodprice != null" >
+      and foodPrice = #{foodprice}
+    </if>
+  </select>
+  
+  <select id="getSingle" resultType="fitnessroom.base.model.Foods" >
+    select * from foods
+    where foodId = #{id}
+    limit 0,1
+  </select>
+  
+  <insert id="insert" parameterType="fitnessroom.base.model.Foods" >
+    insert into foods
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="foodid != null" >
+        foodId,
+      </if>
+      <if test="foodname != null" >
+        foodName,
+      </if>
+      <if test="foodcontent != null" >
+        foodContent,
+      </if>
+      <if test="foodimgurl != null" >
+        foodImgUrl,
+      </if>
+      <if test="foodprice != null" >
+        foodPrice
+      </if>
+    </trim>
+    <trim prefix="values(" suffix=")" suffixOverrides="," >
+      <if test="foodid != null" >
+        #{foodid},
+      </if>
+      <if test="foodname != null" >
+        #{foodname},
+      </if>
+      <if test="foodcontent != null" >
+        #{foodcontent},
+      </if>
+      <if test="foodimgurl != null" >
+        #{foodimgurl},
+      </if>
+      <if test="foodprice != null" >
+        #{foodprice}
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="update" parameterType="fitnessroom.base.model.Foods" >
+    update foods
+    <set >
+      <if test="foodname != null" >
+        foodName = #{foodname},
+      </if>
+      <if test="foodcontent != null" >
+        foodContent = #{foodcontent},
+      </if>
+      <if test="foodimgurl != null" >
+        foodImgUrl = #{foodimgurl},
+      </if>
+      <if test="foodprice != null" >
+        foodPrice = #{foodprice}
+      </if>
+    </set>
+    where
+    foodId = #{foodid}
+  </update>
+  
+  <delete id="batchDelete" >
+    delete from foods
+    where foodId in(
+    <foreach item="item" collection="list" separator="," >
+      #{item}
+    </foreach>
+    )
+  </delete>
+  
+  <select id="getListWithPage" resultType="fitnessroom.base.model.dto.FoodsDto" parameterType="fitnessroom.base.model.Foods" >
+    SELECT 
+    	*
+    	,(SELECT COUNT(*) FROM expectfoods WHERE expectfoods.foodid=foods.foodid AND DATE_FORMAT(expectfoodtime,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d')) expectcount
+    FROM foods
+    where 1=1
+    <if test="foodid != null" >
+      and foodId = #{foodid}
+    </if>
+    <if test="foodname != null" >
+      and foodName = #{foodname}
+    </if>
+    <if test="foodcontent != null" >
+      and foodContent = #{foodcontent}
+    </if>
+    <if test="foodimgurl != null" >
+      and foodImgUrl = #{foodimgurl}
+    </if>
+    <if test="foodprice != null" >
+      and foodPrice = #{foodprice}
+    </if>
+  </select>
+  
+  <select id="count" resultType="java.lang.Long" parameterType="fitnessroom.base.model.Foods" >
+    select count(*) from foods
+    where 1=1
+    <if test="foodid != null" >
+      and foodId = #{foodid}
+    </if>
+    <if test="foodname != null" >
+      and foodName = #{foodname}
+    </if>
+    <if test="foodcontent != null" >
+      and foodContent = #{foodcontent}
+    </if>
+    <if test="foodimgurl != null" >
+      and foodImgUrl = #{foodimgurl}
+    </if>
+    <if test="foodprice != null" >
+      and foodPrice = #{foodprice}
+    </if>
+  </select>
+  
+</mapper>

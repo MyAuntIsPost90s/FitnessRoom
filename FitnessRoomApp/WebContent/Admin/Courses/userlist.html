@@ -24,10 +24,12 @@
         <table class="layui-table" lay-skin="line" style="margin:-1px 0">
             <colgroup>
                 <col width="100">
+                <col width="50">
             </colgroup>
             <thead>
             <tr>
                 <th>用户课程</th>
+                <th>备注</th>
             </tr>
             </thead>
         </table>
@@ -35,6 +37,7 @@
             <table class="layui-table" lay-skin="line" style="margin: 0">
                 <colgroup>
                     <col width="100">
+                    <col width="50">
                 </colgroup>
                 <tbody id="tb-course"></tbody>
             </table>
@@ -59,7 +62,7 @@
         });
     }
 
-    //展示用户备注
+    //展示用户预约课程
     function showUserNote(userid){
         $.post(Config.UrlHead + "/expectCourses/list"
             ,{userid:userid,page:1,rows:9999}
@@ -83,7 +86,7 @@
                             if(arr[i]==''){
                                 continue;
                             }
-                            html+='<tr><td>'+arr[i].coursename+'</td></tr>';
+                            html+='<tr><td>'+arr[i].coursename+'</td><td>'+arr[i].note+'</td></tr>';
                         }
                         $('#tb-course').html(html);
                     }

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>健身餐设置</title>
+    <link rel="stylesheet" href="../../Contents/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/easyui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/icon.css">
+    <script src="../../Contents/js/config.js"></script>
+    <script src="../../Contents/js/jquery.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/jquery.easyui.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../Contents/js/easyui.util.js"></script>
+    <script src="../../Contents/lib/lingshiframework/lingshi_base.js"></script>
+    <script src="../../Contents/js/md5.js"></script>
+    <script src="../../Contents/js/layui.util.js"></script>
+</head>
+<body>
+<div class="easyui-layout" data-options='fit:"true"'>
+    <table id="table-food"></table>
+</div>
+<script id="lay-foodform" type="text/html">
+    <div style="padding: 10px;padding-right: 30px">
+        <form class="form-food" id="form-food">
+            <input id="opt-type" type="hidden" name="type"/>
+            <input type="hidden" name="foodid"/>
+            <div class="layui-form-item">
+                <label class="layui-form-label">预览图</label>
+                <img id="img-foodimgurl" data-src="" src="../../Contents/images/dftfood.png" height="80" width="80"/>
+                <button type="button" class="layui-btn" id="btn-foodimgurl">
+                    <i class="layui-icon">&#xe67c;</i>上传图片
+                </button>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="foodname" required placeholder="请输入名称" data-valid="name:'名称',length:[1,40]"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">价格</label>
+                <div class="layui-input-block">
+                    <input type="number" name="foodprice" required placeholder="请输入价格"
+                           data-valid="name:'价格',length:[1,3]" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">描述</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" placeholder="请输入描述" name="foodcontent"
+                              data-valid="name:'描述',length:[1,100]" autocomplete="off"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item" style="text-align: right">
+                <button type="button" class="layui-btn" onclick="save()">保存</button>
+            </div>
+        </form>
+    </div>
+</script>
+<script id="lay-expect" type="text/html">
+    <div style="width: 100%;height:350px">
+        <table class="layui-table" lay-skin="line" style="margin:-1px 0">
+            <colgroup>
+                <col width="100">
+                <col width="50">
+                <col width="50">
+                <col width="50">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>用户</th>
+                <th>数量</th>
+                <th>单价</th>
+                <th>总价</th>
+            </tr>
+            </thead>
+        </table>
+        <div style="height: 270px;overflow-y: auto;border: 1px solid #e6e6e6;">
+            <table class="layui-table" lay-skin="line" style="margin: 0">
+                <colgroup>
+                    <col width="100">
+                    <col width="50">
+                    <col width="50">
+                    <col width="50">
+                </colgroup>
+                <tbody id="tb-expectuser"></tbody>
+            </table>
+        </div>
+    </div>
+</script>
+<script src="../../Contents/lib/layui/layui.all.js"></script>
+<script>
+    $(function () {
+        initDataGrid();
+    })
+
+    //保存
+    function save() {
+        var postData = FormUtil.getFormMap("#form-food");
+        if (postData == null || postData == '') {
+            return;
+        }
+        postData.foodimgurl = $('#img-foodimgurl').attr('data-src');
+        var url = Config.UrlHead + '/foods/add';
+        if (postData.type == 'edit') {
+            url = Config.UrlHead + '/foods/update';
+        }
+        $.post(url
+            , postData
+            , function (data) {
+                if (data.code == 1) {
+                    layer.closeAll();
+                }
+                layer.msg(data.msg);
+                $('#table-food').datagrid('reload');
+            }, 'json')
+    }
+
+    //展示预约用户
+    function showExpectUser(foodid) {
+        $.post(Config.UrlHead + "/expectFoods/list4expect"
+            , {foodid: foodid}
+            , function (data) {
+                if (data.code != 1) {
+                    layer.msg(data.msg);
+                    return;
+                }
+                layer.open({
+                    type: 1
+                    , area: ['500px', '400px']
+                    , title: '今日预约信息'
+                    , content: $('#lay-expect').html()
+                    , success: function () {
+                        var arr = data.data;
+                        var html = '';
+                        if (arr.length < 1 || arr[0] == null || arr[0] == '') {
+                            html += '<tr><td>暂无</td></tr>';
+                        }
+                        for (var i = 0; i < arr.length; i++) {
+                            if (arr[i] == '') {
+                                continue;
+                            }
+                            html += '<tr><td>' + arr[i].realname + '</td><td>' + arr[i].count + '</td><td>' + arr[i].foodprice + '</td><td>' + arr[i].totalprice + '</td></tr>';
+                        }
+                        $('#tb-expectuser').html(html);
+                    }
+                });
+            }, 'json')
+    }
+
+    //批量删除
+    function batchDelete() {
+        var rows = $('#table-food').datagrid('getChecked');
+        if (rows.length < 1) {
+            return;
+        }
+        var ids = [];
+        for (var i = 0; i < rows.length; i++) {
+            ids.push(rows[i].foodid);
+        }
+        layer.confirm("是否确定删除", function (index) {
+            $.ajax({
+                url: Config.UrlHead + '/foods/delete',
+                contentType: "application/json ; charset=utf-8",
+                data: JSON.stringify(ids),
+                method: 'post',
+                dataType: 'json',
+                success: function (data) {
+                    layer.close(index);
+                    layer.msg(data.msg);
+                    $('#table-food').datagrid('reload');
+                }
+            });
+        }, function (index) {
+            layer.close(index);
+        });
+    }
+
+    //点击删除事件
+    function del(id) {
+        var ids = [];
+        ids.push(id);
+        layer.confirm("是否确定删除", function (index) {
+            $.ajax({
+                url: Config.UrlHead + '/foods/delete',
+                contentType: "application/json ; charset=utf-8",
+                data: JSON.stringify(ids),
+                method: 'post',
+                dataType: 'json',
+                success: function (data) {
+                    layer.close(index);
+                    layer.msg(data.msg);
+                    $('#table-food').datagrid('reload');
+                }
+            });
+        }, function (index) {
+            layer.close(index);
+        });
+    }
+
+    //展示添加
+    function showAddFood() {
+        layer.open({
+            type: 1
+            , title: '添加健身餐'
+            , content: $('#lay-foodform').html()
+            , success: function () {
+                $('#opt-type').val('add');
+                FormUtil.loadForm('#form-food', {sex: 0});
+                layui.laydate.render({
+                    elem: '#date-birthday'
+                });
+                layui.form.render();
+                initUploder();
+            }
+        })
+    }
+
+    //展示编辑框
+    function showEdit(id) {
+        var index = layer.open({type: 3});
+        $.post(Config.UrlHead + '/foods/single'
+            , {foodid: id}
+            , function (data) {
+                layer.close(index);
+                layer.open({
+                    type: 1
+                    , title: '编辑健身餐信息'
+                    , content: $('#lay-foodform').html()
+                    , success: function () {
+                        $('#opt-type').val('edit');
+                        layui.laydate.render({
+                            elem: '#date-birthday'
+                        });
+
+                        if (data.code == 1) {
+                            FormUtil.loadForm('#form-food', data.data);
+                        } else {
+                            layer.msg(data.msg);
+                        }
+                        layui.form.render();
+                        initUploder();
+                    }
+                })
+            }, 'json');
+    }
+
+    //初始化表格数据
+    function initDataGrid() {
+        EasyUIUtil.initDataGrid('#table-food', Config.UrlHead + "/foods/list", getColumns());
+        var pager = $('#table-food').datagrid('getPager');
+        pager.pagination({
+            showPageList: true,
+            buttons: [{
+                iconCls: 'icon-add',
+                handler: function () {
+                    showAddFood();
+                }
+            }, {
+                iconCls: 'icon-remove',
+                handler: function () {
+                    batchDelete();
+                }
+            }],
+            onBeforeRefresh: function () {
+                return true;
+            }
+        });
+    }
+
+    //获取列
+    function getColumns() {
+        var columns = [[
+            {field: 'ck', checkbox: true},
+            {
+                field: 'foodid',
+                width: 100,
+                align: 'center',
+                title: "操作",
+                formatter: function (val, row) {
+                    return '<button class="layui-btn layui-btn-xs layui-btn-danger" onclick="del(\'' + val + '\')"><i class="layui-icon">&#xe640;</i>移除</button>'
+                        + '<button class="layui-btn layui-btn-xs" onclick="showEdit(\'' + val + '\')"><i class="layui-icon">&#xe642;</i>编辑</button>'
+                        + '<button class="layui-btn layui-btn-xs layui-btn-normal" onclick="showExpectUser(\'' + val + '\')"><i class="layui-icon">&#xe629;</i>今日预约</button> ';
+                }
+            },
+            {
+                field: 'foodimgurl',
+                width: 50,
+                align: 'center',
+                title: "预览图",
+                formatter: function (val, row) {
+                    if (val == null || val == '') {
+                        val = '../../Contents/images/dftfood.png';
+                    } else {
+                        val = Config.UrlHead + val;
+                    }
+                    return '<img src="' + val + '" width="50" height="50" >'
+                }
+            },
+            {field: 'foodname', width: 100, align: 'center', title: "名称"},
+            {field: 'expectcount', width: 100, align: 'center', title: "今日预约数量"},
+            {field: 'foodprice', width: 100, align: 'center', title: "价格"},
+            {field: 'foodcontent', width: 100, align: 'center', title: "描述"}
+        ]];
+        return columns;
+    }
+
+    //初始话头像上传组件
+    function initUploder() {
+        layui.upload.render({
+            elem: '#btn-foodimgurl' //绑定元素
+            , accept: 'images'
+            , data: {basePath: '/Uploadfile/foods/'}
+            , url: Config.UrlHead + '/uploadhead' //上传接口
+            , done: function (res) {
+                $('#img-foodimgurl').attr("data-src", res.msg);
+                $('#img-foodimgurl').attr("src", Config.UrlHead + res.msg);
+            }
+        });
+    }
+</script>
+</body>
+</html>

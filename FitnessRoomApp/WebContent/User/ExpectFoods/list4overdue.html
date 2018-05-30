@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>历史预约</title>
+    <link rel="stylesheet" href="../../Contents/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/easyui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/icon.css">
+    <script src="../../Contents/js/config.js"></script>
+    <script src="../../Contents/js/jquery.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/jquery.easyui.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../Contents/js/easyui.util.js"></script>
+    <script src="../../Contents/lib/lingshiframework/lingshi_base.js"></script>
+    <script src="../../Contents/js/md5.js"></script>
+    <script src="../../Contents/js/layui.util.js"></script>
+</head>
+<body>
+<div class="easyui-layout" data-options='fit:"true"'>
+    <table id="table-expect"></table>
+</div>
+<script src="../../Contents/lib/layui/layui.all.js"></script>
+<script>
+    $(function () {
+        initDataGrid();
+    })
+
+    //初始化表格数据
+    function initDataGrid() {
+        EasyUIUtil.initDataGrid('#table-expect', Config.UrlHead + "/expectFoods/list4overdue", getColumns());
+        var pager = $('#table-food').datagrid('getPager');
+        pager.pagination({
+            showPageList: true,
+            buttons: [],
+            onBeforeRefresh: function () {
+                return true;
+            }
+        });
+    }
+
+    //删除预约
+    function del(id){
+        var ids=[ id ];
+        $.ajax({
+            url: Config.UrlHead + '/expectFoods/delete',
+            contentType: "application/json ; charset=utf-8",
+            data: JSON.stringify(ids),
+            method: 'post',
+            dataType: 'json',
+            success: function (data) {
+                initExpectFood();
+            }
+        });
+    }
+
+    //获取列
+    function getColumns() {
+        var columns = [[
+            {
+                field: 'expectfoodid',
+                width: 100,
+                align: 'center',
+                title: "操作",
+                formatter: function (val, row) {
+                    return '<button class="layui-btn layui-btn-xs layui-btn-danger" onclick="del(\'' + val + '\')"><i class="layui-icon">&#xe640;</i>移除</button>';
+                }
+            },
+            {field: 'foodname', width: 100, align: 'center', title: "健身餐"},
+            {field: 'foodprice', width: 100, align: 'center', title: "价格"},
+            {field: 'note', width: 100, align: 'center', title: "备注"},
+            {field: 'expectfoodtime', width: 100, align: 'center', title: "预约时间"}
+        ]];
+        return columns;
+    }
+</script>
+</body>
+</html>

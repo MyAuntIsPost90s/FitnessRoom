@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>预约健身餐</title>
+    <link rel="stylesheet" href="../../Contents/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/easyui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/icon.css">
+    <script src="../../Contents/js/config.js"></script>
+    <script src="../../Contents/js/jquery.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/jquery.easyui.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../Contents/js/easyui.util.js"></script>
+    <script src="../../Contents/lib/lingshiframework/lingshi_base.js"></script>
+    <script src="../../Contents/js/md5.js"></script>
+    <script src="../../Contents/js/layui.util.js"></script>
+</head>
+<body>
+<div class="easyui-layout" data-options='fit:"true"'>
+    <div data-options='region:"center"'>
+        <table id="table-food"></table>
+    </div>
+    <div data-options='region:"east"' style="width: 500px">
+        <h4 style="color: #888;padding: 10px 10px;border-bottom: 1px solid #e8e8e8">我的预约</h4>
+        <div style="width: 100%;height:450px">
+            <table class="layui-table" lay-skin="line" style="margin:-1px 0">
+                <colgroup>
+                    <col width="100">
+                    <col width="150">
+                    <col width="150">
+                    <col width="150">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>操作</th>
+                    <th>名称</th>
+                    <th>时间</th>
+                    <th>备注</th>
+                </tr>
+                </thead>
+            </table>
+            <div style="height: 370px;overflow-y: auto;border: 1px solid #e6e6e6;">
+                <table class="layui-table" lay-skin="line" style="margin: 0">
+                    <colgroup>
+                        <col width="100">
+                        <col width="150">
+                        <col width="150">
+                        <col width="150">
+                    </colgroup>
+                    <tbody id="tb-expectfood"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script id="lay-expect" type="text/html">
+    <div style="padding: 10px;padding-right: 30px">
+        <form class="form-expect" id="form-expect">
+            <input type="hidden" name="foodid"/>
+            <div class="layui-form-item">
+                <label class="layui-form-label">预约时间</label>
+                <div class="layui-input-block">
+                    <input type="text" id="date-expectfoodtime" readonly name="expectfoodtime"
+                           data-valid="name:'预约时间',length:[1,19]" required placeholder="例:2000-01-01 15:00:00"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-block">
+                    <input type="text" name="note" required placeholder="请输入备注" data-valid="name:'备注',length:[1,100]"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" style="text-align: right">
+                <button type="button" class="layui-btn" onclick="addSingleInFood()">预约</button>
+            </div>
+        </form>
+    </div>
+</script>
+<script src="../../Contents/lib/layui/layui.all.js"></script>
+<script>
+    $(function () {
+        initDataGrid();
+        initExpectFood();
+    })
+
+    //获取我的预约餐
+    function initExpectFood() {
+        $.post(Config.UrlHead + "/expectFoods/list"
+            , {page: 1, rows: 999}
+            , function (data) {
+                if (data.code != 1) {
+                    layer.msg(data.msg);
+                    return;
+                }
+                var list = data.data.rows;
+                var html = ''
+                for (var i = 0; i < list.length; i++) {
+                    html += '<tr><td><button class="layui-btn layui-btn-xs layui-btn-danger" onclick="deleteExpect(this,\''+list[i].expectfoodid+'\')"><i class="layui-icon">&#xe640;</i>移除</button></td>'
+                        + '<td><div style="width: 100px;overflow-x: hidden" class="div-name">' + list[i].foodname + '</div></td>'
+                        + '<td>' + list[i].expectfoodtime + '</td>'
+                        + '<td>' + list[i].note + '</td></tr>';
+                }
+                $('#tb-expectfood').html(html);
+            }, 'json')
+    }
+
+    //初始化表格数据
+    function initDataGrid() {
+        EasyUIUtil.initDataGrid('#table-food', Config.UrlHead + "/foods/list", getColumns());
+        var pager = $('#table-food').datagrid('getPager');
+        pager.pagination({
+            showPageList: true,
+            buttons: [],
+            onBeforeRefresh: function () {
+                return true;
+            }
+        });
+    }
+
+    //删除预约
+    function deleteExpect(obj,id){
+        var ids=[ id ];
+        $.ajax({
+            url: Config.UrlHead + '/expectFoods/delete',
+            contentType: "application/json ; charset=utf-8",
+            data: JSON.stringify(ids),
+            method: 'post',
+            dataType: 'json',
+            success: function (data) {
+                initExpectFood();
+            }
+        });
+    }
+
+    //展示预约
+    function showExpect(foodid) {
+        layer.open({
+            type: 1
+            , title: '预约健身餐'
+            , content: $('#lay-expect').html()
+            , success: function () {
+                FormUtil.loadForm('#form-expect', {foodid: foodid});
+                layui.laydate.render({
+                    elem: '#date-expectfoodtime'
+                    , type: 'datetime'
+                });
+                layui.form.render();
+            }
+        })
+    }
+
+    //添加单条
+    function addSingleInFood() {
+        var postData = FormUtil.getFormMap('#form-expect');
+        if (postData == null) {
+            return;
+        }
+        $.post(Config.UrlHead + '/expectFoods/add'
+            , postData
+            , function (data) {
+                layer.closeAll();
+                layer.msg(data.msg);
+                initExpectFood();
+            }, 'json');
+    }
+
+    //获取列
+    function getColumns() {
+        var columns = [[
+            {
+                field: 'foodid',
+                width: 50,
+                align: 'center',
+                title: "操作",
+                formatter: function (val, row) {
+                    return '<button class="layui-btn layui-btn-xs" onclick="showExpect(\'' + val + '\')"><i class="layui-icon">&#xe61f;</i>预约</button>'
+                }
+            },
+            {
+                field: 'foodimgurl',
+                width: 50,
+                align: 'center',
+                title: "预览图",
+                formatter: function (val, row) {
+                    if (val == null || val == '') {
+                        val = '../../Contents/images/dftfood.png';
+                    } else {
+                        val = Config.UrlHead + val;
+                    }
+                    return '<img src="' + val + '" width="80" height="80" >'
+                }
+            },
+            {field: 'foodname', width: 100, align: 'center', title: "名称"},
+            {field: 'foodprice', width: 100, align: 'center', title: "价格"},
+            {field: 'foodcontent', width: 100, align: 'center', title: "描述"}
+        ]];
+        return columns;
+    }
+</script>
+</body>
+</html>

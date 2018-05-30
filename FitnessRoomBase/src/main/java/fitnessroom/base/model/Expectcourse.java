@@ -7,6 +7,8 @@ public class Expectcourse {
 
     private String courseid;
 
+    private String note;
+
     public String getExpectcourseid() {
         return expectcourseid;
     }
@@ -29,5 +31,13 @@ public class Expectcourse {
 
     public void setCourseid(String courseid) {
         this.courseid = courseid;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

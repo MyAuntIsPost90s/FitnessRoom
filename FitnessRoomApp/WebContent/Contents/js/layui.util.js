@@ -27,11 +27,21 @@ FormUtil={
             var val=elem.val();
             map[name]=val;
         }
+        var textareas= $(id).find('textarea');
+        for(var i=0;i<textareas.length;i++){
+            var elem=$(textareas[i]);
+            if(!FormUtil.valid(elem)){
+                return;
+            }
+            var name = elem.attr('name');
+            var val=elem.val();
+            map[name]=val;
+        }
 
         return map
     },
     loadForm:function(id,data){
-        //获取input
+        //填充input
         var inputs = $(id).find('input');
         for(var i=0;i<inputs.length;i++){
             var elem=$(inputs[i]);
@@ -45,10 +55,19 @@ FormUtil={
                 elem.val(data[name]);
             }
         }
-        //获取select
+        //填充select
         var selects= $(id).find('select');
         for(var i=0;i<selects.length;i++){
-            var elem=$(inputs[i]);
+            var elem=$(selects[i]);
+            var name = elem.attr('name');
+            if(data[name]!=null){
+                elem.val(data[name]);
+            }
+        }
+        //填充textarea
+        var textareas= $(id).find('textarea');
+        for(var i=0;i<textareas.length;i++){
+            var elem=$(textareas[i]);
             var name = elem.attr('name');
             if(data[name]!=null){
                 elem.val(data[name]);

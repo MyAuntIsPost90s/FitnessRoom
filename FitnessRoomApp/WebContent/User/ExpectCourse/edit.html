@@ -32,6 +32,7 @@
                 <tr>
                     <th>操作</th>
                     <th>名称</th>
+                    <th>备注</th>
                 </tr>
                 </thead>
             </table>
@@ -63,7 +64,12 @@
         $('#tb-expectcourse tr').each(function () {
             var $tr = $(this);
             var courseid = $tr.attr('data-id');
-            list.push({courseid: courseid})
+            var note = $tr.find('.inp-note').val();
+            if(note.length>100){
+                layer.msg('备注时间过长');
+                return;
+            }
+            list.push({courseid: courseid,note: note});
         });
         if (list.length < 1) {
             layer.msg('至少需要一门课');
@@ -134,6 +140,7 @@
             var temp = '<tr data-id="' + rows[i].courseid + '" >'
                 + '<td><button class="layui-btn layui-btn-xs layui-btn-danger" onclick="$(this).parent().parent().remove()"><i class="layui-icon">&#xe640;</i>移除</button></td>'
                 + '<td><div style="width: 100px;overflow-x: hidden" class="div-name">' + rows[i].coursename + '</div></td>'
+                + '<td><input  class="layui-input layui-btn-sm inp-note" type="text" placeholder="请设备注时间" value="'+ rows[i].note +'" ></td>'
                 + '</tr>';
             html += temp;
         }
@@ -147,7 +154,8 @@
             return;
         }
         $('#tb-expectcourse').append('<tr data-id="'+courseid+'"><td><button class="layui-btn layui-btn-xs layui-btn-danger" onclick="$(this).parent().parent().remove()"><i class="layui-icon">&#xe640;</i>移除</button></td>'
-        +'<td><div style="width: 100px;overflow-x: hidden" class="div-name">'+coursename+'</div></td></tr>');
+        +'<td><div style="width: 100px;overflow-x: hidden" class="div-name">'+coursename+'</div></td>'
+        +'<td><input class="layui-input layui-btn-sm inp-note" type="text" placeholder="请设备注时间" ></td></tr>');
     }
 
     //获取列

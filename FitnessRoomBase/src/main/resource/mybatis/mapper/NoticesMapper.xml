@@ -62,6 +62,9 @@
       <if test="noticetitle != null" >
         noticeTitle = #{noticetitle},
       </if>
+       <if test="noticecontent != null" >
+        noticeContent = #{noticecontent},
+      </if>
       <if test="noticetime != null" >
         noticeTime = #{noticetime}
       </if>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="fitnessroom.base.dao.ExpectfoodsMapper" >
+  <select id="getList" resultType="fitnessroom.base.model.Expectfoods" parameterType="fitnessroom.base.model.Expectfoods" >
+    select * from expectfoods
+    where 1=1
+    <if test="expectfoodid != null" >
+      and expectFoodId = #{expectfoodid}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="foodid != null" >
+      and foodId = #{foodid}
+    </if>
+    <if test="expectfoodtime != null" >
+      and expectFoodTime = #{expectfoodtime}
+    </if>
+    <if test="note != null" >
+      and note = #{note}
+    </if>
+  </select>
+  
+  <select id="getSingle" resultType="fitnessroom.base.model.Expectfoods" >
+    select * from expectfoods
+    where expectFoodId = #{id}
+    limit 0,1
+  </select>
+  
+  <insert id="insert" parameterType="fitnessroom.base.model.Expectfoods" >
+    insert into expectfoods
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="expectfoodid != null" >
+        expectFoodId,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="foodid != null" >
+        foodId,
+      </if>
+      <if test="expectfoodtime != null" >
+        expectFoodTime,
+      </if>
+      <if test="note != null" >
+        note
+      </if>
+    </trim>
+    <trim prefix="values(" suffix=")" suffixOverrides="," >
+      <if test="expectfoodid != null" >
+        #{expectfoodid},
+      </if>
+      <if test="userid != null" >
+        #{userid},
+      </if>
+      <if test="foodid != null" >
+        #{foodid},
+      </if>
+      <if test="expectfoodtime != null" >
+        #{expectfoodtime},
+      </if>
+      <if test="note != null" >
+        #{note}
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="update" parameterType="fitnessroom.base.model.Expectfoods" >
+    update expectfoods
+    <set >
+      <if test="userid != null" >
+        userId = #{userid},
+      </if>
+      <if test="foodid != null" >
+        foodId = #{foodid},
+      </if>
+      <if test="expectfoodtime != null" >
+        expectFoodTime = #{expectfoodtime},
+      </if>
+      <if test="note != null" >
+        note = #{note}
+      </if>
+    </set>
+    where
+    expectFoodId = #{expectfoodid}
+  </update>
+  
+  <delete id="batchDelete" >
+    delete from expectfoods
+    where expectFoodId in(
+    <foreach item="item" collection="list" separator="," >
+      #{item}
+    </foreach>
+    )
+  </delete>
+  
+  <select id="getListWithPage" resultType="fitnessroom.base.model.Expectfoods" parameterType="fitnessroom.base.model.Expectfoods" >
+    select * from expectfoods
+    where 1=1
+    <if test="expectfoodid != null" >
+      and expectFoodId = #{expectfoodid}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="foodid != null" >
+      and foodId = #{foodid}
+    </if>
+    <if test="expectfoodtime != null" >
+     <![CDATA[ and  date_format(expectfoodtime,'%Y-%m-%d')  >= date_format(#{expectfoodtime},'%Y-%m-%d')  ]]>
+    </if>
+    <if test="note != null" >
+      and note = #{note}
+    </if>
+    order by expectfoodtime asc
+  </select>
+  
+  <select id="getListWithOverdue" resultType="fitnessroom.base.model.Expectfoods" parameterType="fitnessroom.base.model.Expectfoods" >
+    select * from expectfoods
+    where 1=1
+    <![CDATA[ and  date_format(expectfoodtime,'%Y-%m-%d')  < date_format(now(),'%Y-%m-%d')  ]]>
+    <if test="expectfoodid != null" >
+      and expectFoodId = #{expectfoodid}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="foodid != null" >
+      and foodId = #{foodid}
+    </if>
+    <if test="note != null" >
+      and note = #{note}
+    </if>
+    order by expectfoodtime desc
+  </select>
+  
+  <select id="count" resultType="java.lang.Long" parameterType="fitnessroom.base.model.Expectfoods" >
+    select count(*) from expectfoods
+    where 1=1
+    <if test="expectfoodid != null" >
+      and expectFoodId = #{expectfoodid}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="foodid != null" >
+      and foodId = #{foodid}
+    </if>
+    <if test="expectfoodtime != null" >
+      and expectFoodTime = #{expectfoodtime}
+    </if>
+    <if test="note != null" >
+      and note = #{note}
+    </if>
+  </select>
+  
+  <select id="getExpectUser" resultType="fitnessroom.base.model.dto.ExpectfoodsUserDto">
+  	SELECT u.userId,u.realname,f.foodprice,f.foodid,f.foodname,ef.count FROM
+  	(
+	  	SELECT COUNT(*) count,userid,foodid
+	 	FROM expectfoods
+	 	where date_format(expectfoodtime,'%Y-%m-%d') = date_format(now(),'%Y-%m-%d')
+		GROUP BY userid,foodid
+	) ef
+	, users u
+	, foods f
+	WHERE ef.userid=u.userid
+	AND ef.foodid=f.foodid
+	AND ef.foodId=#{foodid} 
+  </select>
+  
+</mapper>

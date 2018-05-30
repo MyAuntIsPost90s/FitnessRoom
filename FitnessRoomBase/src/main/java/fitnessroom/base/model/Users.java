@@ -8,116 +8,125 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class Users {
-    private String userid;
+	private String userid;
 
-    private String username;
+	private String username;
 
-    private String headimgurl;
+	private String headimgurl;
 
-    private String password;
+	private String password;
 
-    private Integer sex;
+	private Integer sex;
 
-    private String realname;
+	private String realname;
 
-    @JSONField(format = "yyyy-MM-dd")
-   	@DateTimeFormat(pattern = "yyyy-MM-dd")
-   	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
-    private Date birthday;
+	@JSONField(format = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+	private Date birthday;
 
-    private Integer usertype;
+	private Integer usertype;
 
-    private Date createtime;
+	private Date createtime;
 
-    private String phone;
+	private String phone;
 
-    private String note;
+	private String note;
 
-    public String getUserid() {
-        return userid;
-    }
+	public String getUserid() {
+		return userid;
+	}
 
-    public void setUserid(String userid) {
-        this.userid = userid;
-    }
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public String getHeadimgurl() {
-        return headimgurl;
-    }
+	public String getHeadimgurl() {
+		return headimgurl;
+	}
 
-    public void setHeadimgurl(String headimgurl) {
-        this.headimgurl = headimgurl;
-    }
+	public void setHeadimgurl(String headimgurl) {
+		this.headimgurl = headimgurl;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public Integer getSex() {
-        return sex;
-    }
+	public Integer getSex() {
+		return sex;
+	}
 
-    public void setSex(Integer sex) {
-        this.sex = sex;
-    }
+	public void setSex(Integer sex) {
+		this.sex = sex;
+	}
 
-    public String getRealname() {
-        return realname;
-    }
+	public String getRealname() {
+		return realname;
+	}
 
-    public void setRealname(String realname) {
-        this.realname = realname;
-    }
+	public void setRealname(String realname) {
+		this.realname = realname;
+	}
 
-    public Date getBirthday() {
-        return birthday;
-    }
+	public Date getBirthday() {
+		return birthday;
+	}
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
 
-    public Integer getUsertype() {
-        return usertype;
-    }
+	public Integer getUsertype() {
+		return usertype;
+	}
 
-    public void setUsertype(Integer usertype) {
-        this.usertype = usertype;
-    }
+	public void setUsertype(Integer usertype) {
+		this.usertype = usertype;
+	}
 
-    public Date getCreatetime() {
-        return createtime;
-    }
+	public Date getCreatetime() {
+		return createtime;
+	}
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
-    }
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
+	}
 
-    public String getPhone() {
-        return phone;
-    }
+	public String getPhone() {
+		return phone;
+	}
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
-    public String getNote() {
-        return note;
-    }
+	public String getNote() {
+		return note;
+	}
 
-    public void setNote(String note) {
-        this.note = note;
-    }
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null) {
+			Users users = (Users) obj;
+			return this.userid.equals(users.userid);
+		}
+		return false;
+	}
 }

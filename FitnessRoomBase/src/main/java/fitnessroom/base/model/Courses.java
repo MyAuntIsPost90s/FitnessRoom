@@ -7,6 +7,10 @@ public class Courses {
 
     private String coursecontent;
 
+    private Float coursetotaltime;
+
+    private Float coursetime;
+
     public String getCourseid() {
         return courseid;
     }
@@ -29,5 +33,21 @@ public class Courses {
 
     public void setCoursecontent(String coursecontent) {
         this.coursecontent = coursecontent;
+    }
+
+    public Float getCoursetotaltime() {
+        return coursetotaltime;
+    }
+
+    public void setCoursetotaltime(Float coursetotaltime) {
+        this.coursetotaltime = coursetotaltime;
+    }
+
+    public Float getCoursetime() {
+        return coursetime;
+    }
+
+    public void setCoursetime(Float coursetime) {
+        this.coursetime = coursetime;
     }
 }

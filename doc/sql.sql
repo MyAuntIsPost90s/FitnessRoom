@@ -24,12 +24,14 @@ CREATE TABLE `courses` (
   `courseId` varchar(20) NOT NULL COMMENT '课程编号',
   `courseName` varchar(20) NOT NULL DEFAULT '' COMMENT '课程名称',
   `courseContent` varchar(100) NOT NULL DEFAULT '' COMMENT '课程内容',
+  `courseTotalTime` float NOT NULL DEFAULT '0' COMMENT '课程总课时',
+  `courseTime` float NOT NULL DEFAULT '0' COMMENT '课程平均课时',
   PRIMARY KEY (`courseId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `courses` */
 
-insert  into `courses`(`courseId`,`courseName`,`courseContent`) values ('C17513355979913','体育','语文老师也能教体育哦'),('C29113354441812','无氧运动','111'),('C56713344168710','瑜伽','对没错，我就是瑜伽'),('C61713362070814','动感单车','111'),('C88913352281011','有氧运动','33');
+insert  into `courses`(`courseId`,`courseName`,`courseContent`,`courseTotalTime`,`courseTime`) values ('C17513355979913','体育','语文老师也能教体育哦',150,1),('C29113354441812','无氧运动','111',0,0),('C56713344168710','瑜伽','对没错，我就是瑜伽',0,0),('C61713362070814','动感单车','111',0,0),('C88913352281011','有氧运动','33',0,0);
 
 /*Table structure for table `equipments` */
 
@@ -55,12 +57,47 @@ CREATE TABLE `expectcourse` (
   `expectCourseId` varchar(50) NOT NULL COMMENT '主键',
   `userId` varchar(50) NOT NULL COMMENT '用户编号',
   `courseId` varchar(50) NOT NULL COMMENT '课程编号',
+  `note` varchar(200) NOT NULL DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`expectCourseId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `expectcourse` */
 
-insert  into `expectcourse`(`expectCourseId`,`userId`,`courseId`) values ('E38615575902210','U87116060112117','C29113354441812'),('U74022374534210','U74022374534210','C29113354441812');
+insert  into `expectcourse`(`expectCourseId`,`userId`,`courseId`,`note`) values ('E96716560973310','U87116060112117','C29113354441812','周五下午才有空'),('U74022374534210','U74022374534210','C29113354441812','');
+
+/*Table structure for table `expectfoods` */
+
+DROP TABLE IF EXISTS `expectfoods`;
+
+CREATE TABLE `expectfoods` (
+  `expectFoodId` varchar(50) NOT NULL COMMENT '主键',
+  `userId` varchar(50) NOT NULL COMMENT '预约用户编号',
+  `foodId` varchar(50) NOT NULL COMMENT '预约食品',
+  `expectFoodTime` datetime NOT NULL DEFAULT '2014-01-01 00:00:00' COMMENT '预约时间',
+  `note` varchar(100) NOT NULL DEFAULT '' COMMENT '备注',
+  PRIMARY KEY (`expectFoodId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Data for the table `expectfoods` */
+
+insert  into `expectfoods`(`expectFoodId`,`userId`,`foodId`,`expectFoodTime`,`note`) values ('LG15714270798110','U87116060112117','LG19310293459818','2018-05-30 14:27:01','下午就要'),('LG19213350822413','U87116060112117','LG19310293459818','2018-05-29 00:00:00','拉拉'),('LG45213364687114','U87116060112117','LG83510292535017','2018-05-31 00:00:00','我预约了2分量'),('LG47113341617312','U87116060112117','LG83510292535017','2018-05-31 13:34:13','拉拉');
+
+/*Table structure for table `foods` */
+
+DROP TABLE IF EXISTS `foods`;
+
+CREATE TABLE `foods` (
+  `foodId` varchar(50) NOT NULL COMMENT '主键',
+  `foodName` varchar(50) NOT NULL DEFAULT '' COMMENT '健身餐名称',
+  `foodContent` varchar(200) NOT NULL DEFAULT '' COMMENT '健身餐描述',
+  `foodImgUrl` varchar(200) NOT NULL DEFAULT '' COMMENT '健身餐预览图',
+  `foodPrice` float NOT NULL DEFAULT '0' COMMENT '健身餐价格',
+  PRIMARY KEY (`foodId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Data for the table `foods` */
+
+insert  into `foods`(`foodId`,`foodName`,`foodContent`,`foodImgUrl`,`foodPrice`) values ('LG19310293459818','色拉2','我是色拉2','',20),('LG83510292535017','色拉1','我是色拉','',10);
 
 /*Table structure for table `notices` */
 
@@ -76,7 +113,7 @@ CREATE TABLE `notices` (
 
 /*Data for the table `notices` */
 
-insert  into `notices`(`noticeId`,`noticeTitle`,`noticeContent`,`noticeTime`) values ('N64617414265011','测试通知','123','2018-05-10 17:41:43');
+insert  into `notices`(`noticeId`,`noticeTitle`,`noticeContent`,`noticeTime`) values ('N64617414265011','测试通知','123<img src=\"http://localhost:8091/WebContent/Contents/lib/layui/images/face/0.gif\" alt=\"[微笑]\">','2018-05-10 17:41:43');
 
 /*Table structure for table `teacherevaluates` */
 

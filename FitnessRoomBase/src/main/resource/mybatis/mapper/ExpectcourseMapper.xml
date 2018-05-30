@@ -13,6 +13,9 @@
     <if test="courseid != null" >
       and courseId = #{courseid}
     </if>
+    <if test="note != null" >
+      and note = #{note}
+    </if>
   </select>
   
   <select id="getSingle" resultType="fitnessroom.base.model.Expectcourse" >
@@ -31,7 +34,10 @@
         userId,
       </if>
       <if test="courseid != null" >
-        courseId
+        courseId,
+      </if>
+      <if test="note != null" >
+        note
       </if>
     </trim>
     <trim prefix="values(" suffix=")" suffixOverrides="," >
@@ -42,7 +48,10 @@
         #{userid},
       </if>
       <if test="courseid != null" >
-        #{courseid}
+        #{courseid},
+      </if>
+      <if test="note != null" >
+        #{note}
       </if>
     </trim>
   </insert>
@@ -54,7 +63,10 @@
         userId = #{userid},
       </if>
       <if test="courseid != null" >
-        courseId = #{courseid}
+        courseId = #{courseid},
+      </if>
+      <if test="note != null" >
+        note = #{note}
       </if>
     </set>
     where
@@ -82,6 +94,9 @@
     <if test="courseid != null" >
       and courseId = #{courseid}
     </if>
+    <if test="note != null" >
+      and note = #{note}
+    </if>
   </select>
   
   <select id="count" resultType="java.lang.Long" parameterType="fitnessroom.base.model.Expectcourse" >
@@ -96,9 +111,12 @@
     <if test="courseid != null" >
       and courseId = #{courseid}
     </if>
+    <if test="note != null" >
+      and note = #{note}
+    </if>
   </select>
   
-  <select id="getCourseCount" resultType="fitnessroom.base.model.dto.ExpectcourseDto" parameterType="fitnessroom.base.model.Expectcourse">
+   <select id="getCourseCount" resultType="fitnessroom.base.model.dto.ExpectcourseDto" parameterType="fitnessroom.base.model.Expectcourse">
   	SELECT courseid,COUNT(*) count FROM expectcourse
   	where 1=1
     <if test="expectcourseid != null" >

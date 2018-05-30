@@ -13,6 +13,12 @@
     <if test="coursecontent != null" >
       and courseContent = #{coursecontent}
     </if>
+    <if test="coursetotaltime != null" >
+      and courseTotalTime = #{coursetotaltime}
+    </if>
+    <if test="coursetime != null" >
+      and courseTime = #{coursetime}
+    </if>
   </select>
   
   <select id="getSingle" resultType="fitnessroom.base.model.Courses" >
@@ -31,7 +37,13 @@
         courseName,
       </if>
       <if test="coursecontent != null" >
-        courseContent
+        courseContent,
+      </if>
+      <if test="coursetotaltime != null" >
+        courseTotalTime,
+      </if>
+      <if test="coursetime != null" >
+        courseTime
       </if>
     </trim>
     <trim prefix="values(" suffix=")" suffixOverrides="," >
@@ -42,7 +54,13 @@
         #{coursename},
       </if>
       <if test="coursecontent != null" >
-        #{coursecontent}
+        #{coursecontent},
+      </if>
+      <if test="coursetotaltime != null" >
+        #{coursetotaltime},
+      </if>
+      <if test="coursetime != null" >
+        #{coursetime}
       </if>
     </trim>
   </insert>
@@ -54,7 +72,13 @@
         courseName = #{coursename},
       </if>
       <if test="coursecontent != null" >
-        courseContent = #{coursecontent}
+        courseContent = #{coursecontent},
+      </if>
+      <if test="coursetotaltime != null" >
+        courseTotalTime = #{coursetotaltime},
+      </if>
+      <if test="coursetime != null" >
+        courseTime = #{coursetime}
       </if>
     </set>
     where
@@ -82,6 +106,12 @@
     <if test="coursecontent != null" >
       and courseContent = #{coursecontent}
     </if>
+    <if test="coursetotaltime != null" >
+      and courseTotalTime = #{coursetotaltime}
+    </if>
+    <if test="coursetime != null" >
+      and courseTime = #{coursetime}
+    </if>
   </select>
   
   <select id="count" resultType="java.lang.Long" parameterType="fitnessroom.base.model.Courses" >
@@ -95,6 +125,12 @@
     </if>
     <if test="coursecontent != null" >
       and courseContent = #{coursecontent}
+    </if>
+    <if test="coursetotaltime != null" >
+      and courseTotalTime = #{coursetotaltime}
+    </if>
+    <if test="coursetime != null" >
+      and courseTime = #{coursetime}
     </if>
   </select>
   

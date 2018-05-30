@@ -72,6 +72,7 @@ public class ExpectCoursesServiceImpl implements ExpectCoursesService {
 			expectcourseDto.setExpectcourseid(item.getExpectcourseid());
 			expectcourseDto.setCourseid(item.getCourseid());
 			expectcourseDto.setUserid(item.getUserid());
+			expectcourseDto.setNote(item.getNote());
 			Courses courses = coursesService.getSingle(item.getCourseid());
 			expectcourseDto.setCoursename(courses == null ? "" : courses.getCoursename());
 			list.add(expectcourseDto);
