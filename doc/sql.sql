@@ -26,12 +26,13 @@ CREATE TABLE `courses` (
   `courseContent` varchar(100) NOT NULL DEFAULT '' COMMENT '课程内容',
   `courseTotalTime` float NOT NULL DEFAULT '0' COMMENT '课程总课时',
   `courseTime` float NOT NULL DEFAULT '0' COMMENT '课程平均课时',
+  `teacherId` varchar(50) NOT NULL DEFAULT '' COMMENT '教练信息',
   PRIMARY KEY (`courseId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `courses` */
 
-insert  into `courses`(`courseId`,`courseName`,`courseContent`,`courseTotalTime`,`courseTime`) values ('C17513355979913','体育','语文老师也能教体育哦',150,1),('C29113354441812','无氧运动','111',0,0),('C56713344168710','瑜伽','对没错，我就是瑜伽',0,0),('C61713362070814','动感单车','111',0,0),('C88913352281011','有氧运动','33',0,0);
+insert  into `courses`(`courseId`,`courseName`,`courseContent`,`courseTotalTime`,`courseTime`,`teacherId`) values ('C17513355979913','体育','语文老师也能教体育哦',150,1,'U43520002528213'),('C29113354441812','无氧运动','111',0,0,'U13219594622111'),('C56713344168710','瑜伽','对没错，我就是瑜伽',0,0,'U95220011637215'),('C61713362070814','动感单车','111',0,0,''),('C88913352281011','有氧运动','33',0,0,'');
 
 /*Table structure for table `equipments` */
 
@@ -143,13 +144,14 @@ CREATE TABLE `teachers` (
   `teacherBirthday` date NOT NULL DEFAULT '2014-01-01' COMMENT '教练生日',
   `teacherHeadUrl` varchar(100) NOT NULL COMMENT '教练头像',
   `teacherContent` varchar(100) NOT NULL DEFAULT '' COMMENT '教练描述',
-  `teacherPhone` varchar(20) NOT NULL DEFAULT '' COMMENT '联系方式',
+  `teacherPhone` varchar(20) NOT NULL DEFAULT '' COMMENT '联系方式（账号）',
+  `teacherPassword` varchar(50) NOT NULL DEFAULT '202CB962AC59075B964B07152D234B70' COMMENT '教练密码',
   PRIMARY KEY (`teacherId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `teachers` */
 
-insert  into `teachers`(`teacherId`,`teacherName`,`teacherSex`,`teacherBirthday`,`teacherHeadUrl`,`teacherContent`,`teacherPhone`) values ('U13219594622111','火腿肠',1,'2018-02-24','/Uploadfile/teacherheads/LG62815555072310.png','我是火腿肠教练，擅长打人','123456'),('U43520002528213','大香肠',1,'2018-02-24','/Uploadfile/teacherheads/LG32215555986011.png','我是大香肠教练，我擅长踢人，火腿肠是我弟弟','123456'),('U95220011637215','开花肠',0,'2018-02-24','/Uploadfile/teacherheads/LG64415560743112.png','我是开花肠，我会卖萌','123456');
+insert  into `teachers`(`teacherId`,`teacherName`,`teacherSex`,`teacherBirthday`,`teacherHeadUrl`,`teacherContent`,`teacherPhone`,`teacherPassword`) values ('U13219594622111','火腿肠',1,'2018-02-24','/Uploadfile/teacherheads/LG12820235385111.png','我是火腿肠教练，擅长打人','111','202CB962AC59075B964B07152D234B70'),('U43520002528213','大香肠',1,'2018-02-24','/Uploadfile/teacherheads/LG32215555986011.png','我是大香肠教练，我擅长踢人，火腿肠是我弟弟','222','202CB962AC59075B964B07152D234B70'),('U95220011637215','开花肠',0,'2018-02-24','/Uploadfile/teacherheads/LG64415560743112.png','我是开花肠，我会卖萌','333','202CB962AC59075B964B07152D234B70');
 
 /*Table structure for table `usercourses` */
 
