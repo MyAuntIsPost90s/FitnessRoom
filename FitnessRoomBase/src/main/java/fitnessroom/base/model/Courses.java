@@ -11,6 +11,8 @@ public class Courses {
 
     private Float coursetime;
 
+    private String teacherid;
+
     public String getCourseid() {
         return courseid;
     }
@@ -49,5 +51,13 @@ public class Courses {
 
     public void setCoursetime(Float coursetime) {
         this.coursetime = coursetime;
+    }
+
+    public String getTeacherid() {
+        return teacherid;
+    }
+
+    public void setTeacherid(String teacherid) {
+        this.teacherid = teacherid;
     }
 }

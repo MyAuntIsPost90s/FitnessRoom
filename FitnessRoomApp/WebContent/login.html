@@ -92,7 +92,7 @@
                     })
                     return;
                 }
-                if (data.code == 1 && data.data.usertype != -1) {
+                if (data.code == 1 && data.data.usertype == 1) {
                     layer.open({
                         type: 1
                         , area: ['200px','120px']
@@ -101,6 +101,19 @@
                         , content: '<div style="text-align: center;font-size: 14px;line-height: 50px">登陆成功，正在跳转...</div>'
                         , end: function () {
                             window.location.href = 'User/index.html';
+                        }
+                    })
+                    return;
+                }
+                if (data.code == 1 && data.data.usertype == 2) {
+                    layer.open({
+                        type: 1
+                        , area: ['200px','120px']
+                        , time: 2000
+                        , title: '提示'
+                        , content: '<div style="text-align: center;font-size: 14px;line-height: 50px">登陆成功，正在跳转...</div>'
+                        , end: function () {
+                            window.location.href = 'Teacher/index.html';
                         }
                     })
                     return;

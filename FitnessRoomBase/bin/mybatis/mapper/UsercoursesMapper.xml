@@ -17,7 +17,7 @@
       and courseId = #{courseid}
     </if>
     <if test="userid != null" >
-      and userId = #{userid}
+      and (userId = #{userid} or courses.teacherid = #{userid})
     </if>
     <if test="teacherid != null" >
       and teacherId = #{teacherid}

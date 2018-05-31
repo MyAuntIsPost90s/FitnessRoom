@@ -19,6 +19,9 @@
     <if test="coursetime != null" >
       and courseTime = #{coursetime}
     </if>
+    <if test="teacherid != null" >
+      and teacherId = #{teacherid}
+    </if>
   </select>
   
   <select id="getSingle" resultType="fitnessroom.base.model.Courses" >
@@ -43,7 +46,10 @@
         courseTotalTime,
       </if>
       <if test="coursetime != null" >
-        courseTime
+        courseTime,
+      </if>
+      <if test="teacherid != null" >
+        teacherId
       </if>
     </trim>
     <trim prefix="values(" suffix=")" suffixOverrides="," >
@@ -60,7 +66,10 @@
         #{coursetotaltime},
       </if>
       <if test="coursetime != null" >
-        #{coursetime}
+        #{coursetime},
+      </if>
+      <if test="teacherid != null" >
+        #{teacherid}
       </if>
     </trim>
   </insert>
@@ -78,7 +87,10 @@
         courseTotalTime = #{coursetotaltime},
       </if>
       <if test="coursetime != null" >
-        courseTime = #{coursetime}
+        courseTime = #{coursetime},
+      </if>
+      <if test="teacherid != null" >
+        teacherId = #{teacherid}
       </if>
     </set>
     where
@@ -94,23 +106,27 @@
     )
   </delete>
   
-  <select id="getListWithPage" resultType="fitnessroom.base.model.Courses" parameterType="fitnessroom.base.model.Courses" >
-    select * from courses
+  <select id="getListWithPage" resultType="fitnessroom.base.model.dto.CoursesDto" parameterType="fitnessroom.base.model.Courses" >
+    select c.*,t.teachername from courses c
+    left join teachers t on c.teacherid=t.teacherid
     where 1=1
     <if test="courseid != null" >
-      and courseId = #{courseid}
+      and c.courseId = #{courseid}
     </if>
     <if test="coursename != null" >
-      and courseName = #{coursename}
+      and c.courseName = #{coursename}
     </if>
     <if test="coursecontent != null" >
-      and courseContent = #{coursecontent}
+      and c.courseContent = #{coursecontent}
     </if>
     <if test="coursetotaltime != null" >
-      and courseTotalTime = #{coursetotaltime}
+      and c.courseTotalTime = #{coursetotaltime}
     </if>
     <if test="coursetime != null" >
-      and courseTime = #{coursetime}
+      and c.courseTime = #{coursetime}
+    </if>
+    <if test="teacherid != null" >
+      and c.teacherId = #{teacherid}
     </if>
   </select>
   
@@ -131,6 +147,9 @@
     </if>
     <if test="coursetime != null" >
       and courseTime = #{coursetime}
+    </if>
+    <if test="teacherid != null" >
+      and teacherId = #{teacherid}
     </if>
   </select>
   

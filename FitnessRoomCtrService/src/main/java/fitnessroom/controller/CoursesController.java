@@ -25,6 +25,7 @@ public class CoursesController {
 
 	/**
 	 * 获取课程列表
+	 * 
 	 * @param request
 	 * @param response
 	 * @param equipments
@@ -33,8 +34,7 @@ public class CoursesController {
 	 */
 	@ResponseBody
 	@RequestMapping("list")
-	public void list(HttpServletRequest request, HttpServletResponse response, Courses courses, int page,
-			int rows) {
+	public void list(HttpServletRequest request, HttpServletResponse response, Courses courses, int page, int rows) {
 		RequestHolder requestHolder = RequestHolder.get(request, response);
 		try {
 			EUIPageList<Courses> list = coursesService.getList(courses, page, rows);
@@ -46,6 +46,7 @@ public class CoursesController {
 
 	/**
 	 * 获取单个课程信息
+	 * 
 	 * @param request
 	 * @param response
 	 * @param equipmentid
@@ -64,6 +65,7 @@ public class CoursesController {
 
 	/**
 	 * 添加课程
+	 * 
 	 * @param request
 	 * @param response
 	 * @param equipments
@@ -82,6 +84,7 @@ public class CoursesController {
 
 	/**
 	 * 修改课程
+	 * 
 	 * @param request
 	 * @param response
 	 * @param equipments
@@ -100,6 +103,7 @@ public class CoursesController {
 
 	/**
 	 * 移除课程
+	 * 
 	 * @param request
 	 * @param response
 	 * @param ids

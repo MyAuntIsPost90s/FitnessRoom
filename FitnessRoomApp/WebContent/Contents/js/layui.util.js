@@ -115,3 +115,31 @@ var EditModel = {
         return layedit.getContent(tag);
     }
 }
+
+//下拉框加载模板
+var SelectUtil={
+    loadSelect:function(params){
+        if(params.selectId==null||params.url==null
+            ||params.getItem==null){
+            return;
+        }
+        $.post(params.url
+            ,params.postData
+            ,function(data){
+                var rows=data.data.rows;
+                if(rows==null){
+                    return;
+                }
+
+                var html='<option value="">--请选择--</option>';
+                for(var i=0;i<rows.length;i++){
+                    html += params.getItem(rows[i]);
+                }
+                $(params.selectId).html(html);
+                if(params.selectValue!=null){
+                    $(params.selectId).val(params.selectValue);
+                }
+                layui.form.render('select');
+            },'json');
+    }
+}

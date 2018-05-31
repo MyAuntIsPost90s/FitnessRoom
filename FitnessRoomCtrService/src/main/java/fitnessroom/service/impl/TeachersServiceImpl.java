@@ -34,13 +34,24 @@ public class TeachersServiceImpl implements TeachersService {
 	}
 
 	@Override
-	public void add(Teachers teachers) {
+	public void add(Teachers teachers) throws Exception {
+		Teachers teachersQ = new Teachers();
+		teachersQ.setTeacherphone(teachers.getTeacherphone());
+		if (teachersMapper.count(teachersQ) > 0) {
+			throw new Exception("账号重复");
+		}
 		teachers.setTeacherid(RandomNum.getUID());
 		teachersMapper.insert(teachers);
 	}
 
 	@Override
-	public void update(Teachers teachers) {
+	public void update(Teachers teachers) throws Exception {
+		Teachers teachersQ = new Teachers();
+		teachersQ.setTeacherphone(teachers.getTeacherphone());
+		List<Teachers> list = teachersMapper.getList(teachersQ);
+		if (list.size() > 0 && !list.get(0).getTeacherid().equals(teachers.getTeacherid())) {
+			throw new Exception("账号重复");
+		}
 		teachersMapper.update(teachers);
 	}
 

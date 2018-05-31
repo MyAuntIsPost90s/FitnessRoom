@@ -25,6 +25,9 @@
     <if test="teacherphone != null" >
       and teacherPhone = #{teacherphone}
     </if>
+    <if test="teacherpassword != null" >
+      and teacherPassword = #{teacherpassword}
+    </if>
   </select>
   
   <select id="getSingle" resultType="fitnessroom.base.model.Teachers" >
@@ -55,7 +58,10 @@
         teacherContent,
       </if>
       <if test="teacherphone != null" >
-        teacherPhone
+        teacherPhone,
+      </if>
+      <if test="teacherpassword != null" >
+        teacherPassword
       </if>
     </trim>
     <trim prefix="values(" suffix=")" suffixOverrides="," >
@@ -78,7 +84,10 @@
         #{teachercontent},
       </if>
       <if test="teacherphone != null" >
-        #{teacherphone}
+        #{teacherphone},
+      </if>
+      <if test="teacherpassword != null" >
+        #{teacherpassword}
       </if>
     </trim>
   </insert>
@@ -102,7 +111,10 @@
         teacherContent = #{teachercontent},
       </if>
       <if test="teacherphone != null" >
-        teacherPhone = #{teacherphone}
+        teacherPhone = #{teacherphone},
+      </if>
+      <if test="teacherpassword != null" >
+        teacherPassword = #{teacherpassword}
       </if>
     </set>
     where
@@ -142,6 +154,9 @@
     <if test="teacherphone != null" >
       and teacherPhone = #{teacherphone}
     </if>
+    <if test="teacherpassword != null" >
+      and teacherPassword = #{teacherpassword}
+    </if>
   </select>
   
   <select id="count" resultType="java.lang.Long" parameterType="fitnessroom.base.model.Teachers" >
@@ -167,6 +182,9 @@
     </if>
     <if test="teacherphone != null" >
       and teacherPhone = #{teacherphone}
+    </if>
+    <if test="teacherpassword != null" >
+      and teacherPassword = #{teacherpassword}
     </if>
   </select>
   

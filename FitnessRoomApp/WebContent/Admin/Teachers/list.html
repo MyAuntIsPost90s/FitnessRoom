@@ -90,6 +90,7 @@
             if(postData.type=='edit'){
                 url=Config.UrlHead+'/teachers/update';
             }
+            postData.teacherpassword=hex_md5('123').toUpperCase();
             postData.teacherheadurl=imgurl;
             $.post(url
                 ,postData
